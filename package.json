@@ -1,0 +1,41 @@
+{
+  "name": "opus",
+  "version": "1.0.0",
+  "description": "A React.js based remote for Kodi.",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "http-server ./build",
+    "build": "webpack --progress --colors",
+    "dev": "webpack-dev-server --progress --colors"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mattmattmatt/opus.git"
+  },
+  "keywords": [
+    "kodi",
+    "react",
+    "remote"
+  ],
+  "author": "Matt",
+  "bugs": {
+    "url": "https://github.com/mattmattmatt/opus/issues"
+  },
+  "homepage": "https://github.com/mattmattmatt/opus#readme",
+  "devDependencies": {
+    "babel-core": "^6.1.2",
+    "babel-loader": "^6.1.0",
+    "babel-preset-es2015": "^6.1.2",
+    "babel-preset-react": "^6.1.2",
+    "css-loader": "^0.22.0",
+    "html-webpack-plugin": "^1.6.2",
+    "http-server": "^0.8.5",
+    "react": "^0.14.2",
+    "react-dom": "^0.14.2",
+    "react-redux": "^4.0.0",
+    "redux": "^3.0.4",
+    "style-loader": "^0.13.0",
+    "webpack": "^1.12.4",
+    "webpack-dev-server": "^1.12.1"
+  }
+}
