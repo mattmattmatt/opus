@@ -70,6 +70,16 @@ class App extends Component {
         this.onIpChange('192.168.1.140');
     }
 
+    componentDidMount() {
+        this.updateInterval = setInterval(() => {
+            this.props.dispatch(actions.fetchHostState());
+        }, 1000 * 10);
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.updateInterval);
+    }
+
     render() {
         const player = (this.props.hostState.playerInfo ?
             <Player
