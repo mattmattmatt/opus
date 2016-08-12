@@ -11,6 +11,7 @@ export const SET_SETTINGS = 'SET_SETTINGS';
 export const SET_CONNECTION = 'SET_CONNECTION';
 export const SET_PLAYER_INFO = 'SET_PLAYER_INFO';
 export const SET_PLAYLIST_ITEMS = 'SET_PLAYLIST_ITEMS';
+export const UPDATE_CURRENT_IIME = 'UPDATE_CURRENT_IIME';
 
 /*
  * other constants
@@ -33,7 +34,7 @@ function refreshConnection(ip) {
     return (dispatch) => {
         const notificationCallback = () => {
             dispatch(fetchHostState());
-            setTimeout(() => {dispatch(fetchHostState());}, 250); 
+            setTimeout(() => {dispatch(fetchHostState());}, 250);
         };
         connection = kodi(ip, 9090);
         connection.then(c => {
@@ -81,6 +82,7 @@ export function fetchHostState() {
                     ['Player.GetItem', [getState().hostState.activePlayer.playerid, ['title','thumbnail','file','artist','genre','year','rating','album','track','duration','playcount','dateadded','episode','artistid','albumid','tvshowid','fanart']]],
                 ]).then((data) => {
                     dispatch(setPlayerInfo(data));
+                    dispatch(updateCurrentTime());
                 });
             }
         });
@@ -97,6 +99,10 @@ export function setPlaybackState(playbackState) {
 
 export function setPlaylistItems(playlistItems) {
     return { type: SET_PLAYLIST_ITEMS, playlistItems };
+}
+
+export function updateCurrentTime() {
+    return { type: UPDATE_CURRENT_IIME };
 }
 
 function setPlayerInfo(data) {

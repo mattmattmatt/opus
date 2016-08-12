@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import moment from 'moment';
 
 import './App.css';
 
@@ -66,14 +65,18 @@ class App extends Component {
         this.props.dispatch(actions.setSettings({ip}));
     }
 
+    onRequestTimeUpdate() {
+        this.props.dispatch(actions.updateCurrentTime());
+    }
+
     componentWillMount() {
         this.onIpChange('192.168.1.140');
     }
 
     componentDidMount() {
         this.updateInterval = setInterval(() => {
-            this.props.dispatch(actions.fetchHostState());
-        }, 1000 * 10);
+            // this.props.dispatch(actions.fetchHostState());
+        }, 1000 * 1);
     }
 
     componentWillUnmount() {
@@ -86,9 +89,11 @@ class App extends Component {
                 title={this.props.hostState.playerInfo.title}
                 artist={(this.props.hostState.playerInfo.artist || []).join(', ')}
                 album={this.props.hostState.playerInfo.album}
-                duration={moment.duration(this.props.hostState.playerInfo.totaltime).asSeconds()}
-                position={moment.duration(this.props.hostState.playerInfo.time).asSeconds()}
+                duration={this.props.hostState.playerInfo.totaltime}
+                position={this.props.hostState.playerInfo.time + this.props.hostState.playerInfo.timedelta}
                 onSeek={this.onSeek.bind(this)}
+                onRequestTimeUpdate={this.onRequestTimeUpdate.bind(this)}
+                playbackState={this.props.playbackState}
             /> : '');
         return (
             <div className="App">
@@ -101,7 +106,8 @@ class App extends Component {
                     onUpdateClick={this.onUpdateClick.bind(this)}
                     onPlayPauseClick={this.onPlayPauseClick.bind(this)}
                     onStopClick={this.onStopClick.bind(this)}
-                /> {player}
+                />
+                {player}
                 <Playlist
                     items={this.props.hostState.playlistItems}
                     onPlaylistItemPlay={this.playlistItemPlay.bind(this)}

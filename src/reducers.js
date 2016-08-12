@@ -1,9 +1,13 @@
 import { combineReducers } from 'redux';
 import * as actions from './actions';
+import moment from 'moment';
 
 const defaultHostState = {
     activePlayer: null,
-    playerInfo: {},
+    playerInfo: {
+        lastUpdated: 0,
+        timedelta: 0
+    },
     playlistItems: []
 };
 function hostState(state = defaultHostState, action) {
@@ -14,7 +18,14 @@ function hostState(state = defaultHostState, action) {
         case actions.SET_PLAYER_INFO: {
             const hostState = Object.assign({}, state);
             const [playerProps, playerItem] = action.data;
-            hostState.playerInfo = Object.assign({}, playerProps, playerItem.item);
+            hostState.playerInfo = Object.assign({}, playerProps, playerItem.item, { lastUpdated: new Date().getTime() });
+            hostState.playerInfo.time = moment.duration(hostState.playerInfo.time).asSeconds();
+            hostState.playerInfo.totaltime = moment.duration(hostState.playerInfo.totaltime).asSeconds();
+            return hostState;
+        }
+        case actions.UPDATE_CURRENT_IIME: {
+            const hostState = Object.assign({}, state);
+            hostState.playerInfo.timedelta = moment.duration((new Date().getTime() - hostState.playerInfo.lastUpdated), 'ms').asSeconds();
             return hostState;
         }
         case actions.SET_PLAYLIST_ITEMS: {

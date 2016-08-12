@@ -6,6 +6,7 @@ import moment from 'moment';
 import 'moment-duration-format';
 import Draggable from 'react-draggable';
 import throttle from 'lodash.throttle';
+import * as actions from '../actions';
 
 export default class Player extends Component {
     constructor(props) {
@@ -37,6 +38,18 @@ export default class Player extends Component {
                 seekPos: null
             });
         }, 1000);
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.playbackState === actions.PlaybackStates.PLAYING) {
+            if (prevProps.playbackState !== actions.PlaybackStates.PLAYING) {
+                this.timer = setInterval(() => {
+                    this.props.onRequestTimeUpdate();
+                }, 1000);
+            }
+        } else {
+            clearInterval(this.timer);
+        }
     }
 
     render() {
