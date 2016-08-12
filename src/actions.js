@@ -31,7 +31,10 @@ function kodiErrorHandler(error) {
 
 function refreshConnection(ip) {
     return (dispatch) => {
-        const notificationCallback = () => { setTimeout(() => {dispatch(fetchHostState());}, 100); };
+        const notificationCallback = () => {
+            dispatch(fetchHostState());
+            setTimeout(() => {dispatch(fetchHostState());}, 250); 
+        };
         connection = kodi(ip, 9090);
         connection.then(c => {
             c.notification('Player.OnPause', notificationCallback);

@@ -20,7 +20,7 @@ class App extends Component {
     onPlayPauseClick() {
         if (!this.props.hostState.activePlayer) {
             if (this.props.hostState.playlistItems.length > 0) {
-                this.onPlaylistItemClick(0);
+                this.playlistItemPlay(0);
             }
             return;
         }
@@ -44,12 +44,21 @@ class App extends Component {
         });
     }
 
-    onPlaylistItemClick(position) {
+    playlistItemPlay(position) {
         helpers.sendKodiCommand(this.props.connection, 'Player.Open', {
             item: {
                 playlistid: 0,
                 position
             }
+        });
+    }
+
+    playlistItemRemove(position) {
+        helpers.sendKodiCommand(this.props.connection, 'Playlist.Remove', {
+            playlistid: 0,
+            position
+        }).then(() => {
+            this.props.dispatch(actions.fetchHostState());
         });
     }
 
@@ -85,7 +94,9 @@ class App extends Component {
                 /> {player}
                 <Playlist
                     items={this.props.hostState.playlistItems}
-                    onPlaylistItemClick={this.onPlaylistItemClick.bind(this)}
+                    onPlaylistItemPlay={this.playlistItemPlay.bind(this)}
+                    onPlaylistItemRemove={this.playlistItemRemove.bind(this)}
+                    activeItemIndex={this.props.hostState.playerInfo.position}
                 />
             </div>
         );

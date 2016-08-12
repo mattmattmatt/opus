@@ -8,7 +8,13 @@ export default class Playlist extends Component {
         const items = this.props.items.map((item, index) => {
             return (
                 <li key={item.id}>
-                    <PlaylistItem item={item} position={index} onPlaylistItemClick={this.props.onPlaylistItemClick} />
+                    <PlaylistItem
+                        item={item}
+                        position={index}
+                        onPlaylistItemPlay={this.props.onPlaylistItemPlay}
+                        onPlaylistItemRemove={this.props.onPlaylistItemRemove}
+                        isPlaying={this.props.activeItemIndex === index}
+                    />
                 </li>
             );
         });
