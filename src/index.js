@@ -1,15 +1,15 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import {render} from 'react-dom';
 import {Provider} from 'react-redux';
 import {createStore, applyMiddleware} from 'redux';
 import thunkMiddleware from 'redux-thunk';
-// import createLogger from 'redux-logger';
+import createLogger from 'redux-logger';
 import appReducer from './reducers';
 import App from './App';
 import './index.css';
 
-// const loggerMiddleware = createLogger();
-let store = createStore(appReducer, applyMiddleware(thunkMiddleware/*, loggerMiddleware*/));
+const loggerMiddleware = createLogger();
+let store = createStore(appReducer, applyMiddleware(thunkMiddleware, loggerMiddleware));
 
 // import * as actions from './actions';
 
@@ -21,8 +21,8 @@ let store = createStore(appReducer, applyMiddleware(thunkMiddleware/*, loggerMid
 // store.dispatch(actions.setSettings({ip: '192.168.1.140'}));
 // store.dispatch(actions.fetchHostState());
 
-ReactDOM.render((
+render((
     <Provider store={store}>
-        <App  store={store} />
+        <App />
     </Provider>
 ), window.document.getElementById('root'));

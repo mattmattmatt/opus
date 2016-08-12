@@ -1,11 +1,13 @@
 import { combineReducers } from 'redux';
-import { SET_HOST_STATE, SET_PLAYBACK_STATE, SET_SETTINGS, SET_CONNECTION, PlaybackStates } from './actions';
+import * as actions from './actions';
 
-function hostState(state = {}, action) {
+const defaultHostState = {
+    activePlayer: null
+};
+function hostState(state = defaultHostState, action) {
     switch (action.type) {
-        case SET_HOST_STATE:
-            console.log('SET_HOST_STATE', state, action);
-            return state;
+        case actions.SET_ACTIVE_PLAYER:
+            return Object.assign({}, state, {activePlayer: action.player});
         default:
             return state;
     }
@@ -13,18 +15,25 @@ function hostState(state = {}, action) {
 
 function settings(state = {}, action) {
     switch (action.type) {
-        case SET_SETTINGS:
+        case actions.SET_SETTINGS:
             return Object.assign({}, state, action.settings);
-        case SET_CONNECTION:
-            return Object.assign({}, state, action.connection);
         default:
             return state;
     }
 }
 
-function playbackState(state = PlaybackStates.UNKOWN, action) {
+function connection(state = {}, action) {
     switch (action.type) {
-        case SET_PLAYBACK_STATE:
+        case actions.SET_CONNECTION:
+            return action.connection;
+        default:
+            return state;
+    }
+}
+
+function playbackState(state = actions.PlaybackStates.UNKOWN, action) {
+    switch (action.type) {
+        case actions.SET_PLAYBACK_STATE:
             return action.playbackState || state;
         default:
             return state;
@@ -34,7 +43,8 @@ function playbackState(state = PlaybackStates.UNKOWN, action) {
 const app = combineReducers({
     hostState,
     playbackState,
-    settings
+    settings,
+    connection
 });
 
 export default app;

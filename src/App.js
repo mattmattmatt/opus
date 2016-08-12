@@ -1,33 +1,40 @@
 import React, {Component} from 'react';
-
+import {connect} from 'react-redux';
 import './App.css';
 
 import Remote from './components/Remote';
 import Player from './components/Player';
 import Settings from './components/Settings';
 import * as actions from './actions';
+import * as helpers from './helpers';
 
 class App extends Component {
-    onPlayerChanged() {
-        this.props.store.dispatch(actions.fetchHostState());
-    }
 
     onPlayPauseClick() {
-        actions.sendKodiCommand('Player.PlayPause', [0]);
+        if (!this.props.hostState.activePlayer) {
+            return;
+        }
+        helpers.sendKodiCommand(this.props.connection, 'Player.PlayPause', {playerid: this.props.hostState.activePlayer.playerid});
     }
     onStopClick() {
-        actions.sendKodiCommand('Player.Stop', [0]);
+        if (!this.props.hostState.activePlayer) {
+            return;
+        }
+        helpers.sendKodiCommand(this.props.connection, 'Player.Stop', {playerid: this.props.hostState.activePlayer.playerid});
     }
     onSeek(newPerc) {
-        actions.sendKodiCommand('Player.Seek', {
-            playerid: 0,
+        if (!this.props.hostState.activePlayer) {
+            return;
+        }
+        helpers.sendKodiCommand(this.props.connection, 'Player.Seek', {
+            playerid: this.props.hostState.activePlayer.playerid,
             value: newPerc
         });
     }
     onIpChange(ip) {
-        this.props.store.dispatch(actions.setSettings({ip}));
-        this.props.store.dispatch(actions.refreshConnection(this.props.store.getState().settings.ip, this.onPlayerChanged.bind(this)));
+        this.props.dispatch(actions.setSettings({ip}));
     }
+
     componentDidUpdate() {
         // console.log('app update');
     }
@@ -37,20 +44,21 @@ class App extends Component {
     }
 
     componentDidMount() {
-        this.props.store.dispatch(actions.fetchHostState());
-        this.props.store.subscribe(() => {
-            this.forceUpdate();
-        });
+        // this.props.dispatch(actions.fetchHostState());
     }
     render() {
         return (
             <div className="App">
-                <Settings onIpChange={this.onIpChange.bind(this)} ip={this.props.store.getState().settings.ip}/>
-                <Remote playbackState={this.props.store.getState().playbackState} onPlayPauseClick={this.onPlayPauseClick.bind(this)} onStopClick={this.onStopClick.bind(this)}/>
+                <Settings onIpChange={this.onIpChange.bind(this)} ip={this.props.settings.ip}/>
+                <Remote playbackState={this.props.playbackState} onPlayPauseClick={this.onPlayPauseClick.bind(this)} onStopClick={this.onStopClick.bind(this)}/>
                 <Player title={'Shove it!'} artist={'Deftones'} album={'Around the Fur'} duration={305} position={111} onSeek={this.onSeek.bind(this)}/>
             </div>
         );
     }
 }
 
-export default App;
+function mapStateToBitches(state) {
+    return state;
+}
+
+export default connect(mapStateToBitches)(App);

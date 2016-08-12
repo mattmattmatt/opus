@@ -1,11 +1,11 @@
-/* globals Promise */
-
 import kodi from 'kodi-ws';
+import * as helpers from './helpers';
+
 /*
  * action types
  */
 
-export const SET_HOST_STATE = 'SET_HOST_STATE';
+export const SET_ACTIVE_PLAYER = 'SET_ACTIVE_PLAYER';
 export const SET_PLAYBACK_STATE = 'SET_PLAYBACK_STATE';
 export const SET_SETTINGS = 'SET_SETTINGS';
 export const SET_CONNECTION = 'SET_CONNECTION';
@@ -27,8 +27,9 @@ function kodiErrorHandler(error) {
     console.warn(error);
 }
 
-export function refreshConnection(ip, notificationCallback) {
-    return () => {
+function refreshConnection(ip) {
+    return (dispatch) => {
+        const notificationCallback = () => { dispatch(fetchHostState()); };
         connection = kodi(ip, 9090);
         connection.then(c => {
             c.notification('Player.OnPause', notificationCallback);
@@ -36,51 +37,42 @@ export function refreshConnection(ip, notificationCallback) {
             c.notification('Player.OnStop', notificationCallback);
             c.notification('Player.OnSeek', notificationCallback);
             c.notification('Player.OnPropertyChanged', notificationCallback);
+            dispatch(setConnection(c));
+            dispatch(fetchHostState());
         });
     };
 }
 
-export function sendKodiCommand(method, params) {
-    if (!connection) {
-        return Promise.reject('IP not set');
-    }
-
-    return connection.then(c => {
-        return c.run(method, params);
-    });
+export function setConnection(connection) {
+    return { type: SET_CONNECTION, connection };
 }
 
 export function fetchHostState() {
-    return (dispatch) => {
-        sendKodiCommand('Player.GetActivePlayers').then((result) => {
-            if (result.length === 0) {
-                dispatch(setPlaybackState(PlaybackStates.STOPPED));
-            }
-            dispatch(setHostState({ activePlayers: result }));
-        }, kodiErrorHandler);
-        sendKodiCommand('XBMC.GetInfoBooleans', { 'booleans': ['Player.Paused', 'Player.Playing'] }).then((result) => {
+    return (dispatch, getState) => {
+        var commandBatch = [
+            ['Player.GetActivePlayers'],
+            ['XBMC.GetInfoBooleans', { 'booleans': ['Player.Paused', 'Player.Playing'] }]
+        ];
+        helpers.sendKodiBatch(getState().connection, commandBatch).then(([activePlayers, infoBools]) => {
             let playbackState;
 
-            if (!result['Player.Paused'] && !result['Player.Playing']) {
+            if ((!infoBools['Player.Paused'] && !infoBools['Player.Playing']) || !activePlayers.length) {
                 playbackState = PlaybackStates.STOPPED;
-            } else if (result['Player.Paused']) {
+            } else if (infoBools['Player.Paused']) {
                 playbackState = PlaybackStates.PAUSED;
-            } else if (result['Player.Playing']) {
+            } else if (infoBools['Player.Playing']) {
                 playbackState = PlaybackStates.PLAYING;
             } else {
                 playbackState = PlaybackStates.UNKOWN;
             }
             dispatch(setPlaybackState(playbackState));
+            dispatch(setActivePlayer(activePlayers[0]));
         }, kodiErrorHandler);
     };
 }
 
-/*
- * action creators
- */
-
-export function setHostState(hostState) {
-    return { type: SET_HOST_STATE, hostState };
+export function setActivePlayer(player) {
+    return { type: SET_ACTIVE_PLAYER, player };
 }
 
 export function setPlaybackState(playbackState) {
@@ -88,9 +80,7 @@ export function setPlaybackState(playbackState) {
 }
 
 export function setSettings(settings) {
-    return { type: SET_SETTINGS, settings };
-}
-
-export function setConnection(connection) {
-    return { type: SET_CONNECTION, connection };
+    return (dispatch) => {
+        dispatch(refreshConnection(settings.ip, () => {}));
+    };
 }
