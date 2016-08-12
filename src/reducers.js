@@ -2,12 +2,19 @@ import { combineReducers } from 'redux';
 import * as actions from './actions';
 
 const defaultHostState = {
-    activePlayer: null
+    activePlayer: null,
+    playerInfo: {}
 };
 function hostState(state = defaultHostState, action) {
     switch (action.type) {
-        case actions.SET_ACTIVE_PLAYER:
+        case actions.SET_ACTIVE_PLAYER: {
             return Object.assign({}, state, {activePlayer: action.player});
+        }
+        case actions.SET_PLAYER_INFO: {
+            const hostState = Object.assign({}, state);
+            hostState.playerInfo = Object.assign({}, action.playerProps, action.playerItem.item);
+            return hostState;
+        }
         default:
             return state;
     }

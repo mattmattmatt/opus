@@ -19,6 +19,9 @@ export default class Remote extends Component {
                     { this.props.playbackState === actions.PlaybackStates.PLAYING ? 'Pause' : 'Play'}
                 </button>
                 {stopButton}
+                <button onClick={this.props.onUpdateClick}>
+                    Update state
+                </button>
             </div>
         );
     }

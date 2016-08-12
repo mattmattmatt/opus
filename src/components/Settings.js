@@ -10,7 +10,7 @@ export default class Settings extends Component {
                 <formfield>
                     <label>
                         IP Address<br />
-                        <input type="text" onChange={this.onIpChange.bind(this)} ref="inputIp" value={this.props.ip}/>
+                        <input type="text" onChange={this.onIpChange.bind(this)} ref="inputIp" value={this.props.ip || ''}/>
                     </label>
                 </formfield>
             </div>

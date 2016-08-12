@@ -1,9 +1,8 @@
 .player {
     position: relative;
     border: 1px solid black;
-    padding: 2ßpx;
-    width: 60%;
-    margin: auto;
+    padding: 20px;
+    margin: 0 20px;
 }
 
 .seeker {

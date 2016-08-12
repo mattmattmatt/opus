@@ -3,13 +3,13 @@ import {render} from 'react-dom';
 import {Provider} from 'react-redux';
 import {createStore, applyMiddleware} from 'redux';
 import thunkMiddleware from 'redux-thunk';
-import createLogger from 'redux-logger';
+// import createLogger from 'redux-logger';
+// const loggerMiddleware = createLogger();
 import appReducer from './reducers';
 import App from './App';
-import './index.css';
+import './styles/index.css';
 
-const loggerMiddleware = createLogger();
-let store = createStore(appReducer, applyMiddleware(thunkMiddleware, loggerMiddleware));
+let store = createStore(appReducer, window.devToolsExtension && window.devToolsExtension(), applyMiddleware(thunkMiddleware/*, loggerMiddleware*/));
 
 // import * as actions from './actions';
 

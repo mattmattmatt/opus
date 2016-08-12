@@ -9,6 +9,7 @@ export const SET_ACTIVE_PLAYER = 'SET_ACTIVE_PLAYER';
 export const SET_PLAYBACK_STATE = 'SET_PLAYBACK_STATE';
 export const SET_SETTINGS = 'SET_SETTINGS';
 export const SET_CONNECTION = 'SET_CONNECTION';
+export const SET_PLAYER_INFO = 'SET_PLAYER_INFO';
 
 /*
  * other constants
@@ -29,7 +30,7 @@ function kodiErrorHandler(error) {
 
 function refreshConnection(ip) {
     return (dispatch) => {
-        const notificationCallback = () => { dispatch(fetchHostState()); };
+        const notificationCallback = () => { setTimeout(() => {dispatch(fetchHostState());}, 100); };
         connection = kodi(ip, 9090);
         connection.then(c => {
             c.notification('Player.OnPause', notificationCallback);
@@ -49,11 +50,11 @@ export function setConnection(connection) {
 
 export function fetchHostState() {
     return (dispatch, getState) => {
-        var commandBatch = [
+        const commandBatch = [
             ['Player.GetActivePlayers'],
             ['XBMC.GetInfoBooleans', { 'booleans': ['Player.Paused', 'Player.Playing'] }]
         ];
-        helpers.sendKodiBatch(getState().connection, commandBatch).then(([activePlayers, infoBools]) => {
+        return helpers.sendKodiBatch(getState().connection, commandBatch).then(([activePlayers, infoBools]) => {
             let playbackState;
 
             if ((!infoBools['Player.Paused'] && !infoBools['Player.Playing']) || !activePlayers.length) {
@@ -67,7 +68,16 @@ export function fetchHostState() {
             }
             dispatch(setPlaybackState(playbackState));
             dispatch(setActivePlayer(activePlayers[0]));
-        }, kodiErrorHandler);
+        }, kodiErrorHandler).then(() => {
+            if (getState().hostState.activePlayer) {
+                return helpers.sendKodiBatch(getState().connection, [
+                    ['Player.GetProperties', [getState().hostState.activePlayer.playerid, ['playlistid','speed','position','totaltime','time','percentage','shuffled','repeat','canrepeat','canshuffle','canseek','partymode']]],
+                    ['Player.GetItem', [getState().hostState.activePlayer.playerid, ['title','thumbnail','file','artist','genre','year','rating','album','track','duration','playcount','dateadded','episode','artistid','albumid','tvshowid','fanart']]]
+                ]).then(([playerProps, playerItem]) => {
+                    dispatch(setPlayerInfo(playerProps, playerItem));
+                });
+            }
+        });
     };
 }
 
@@ -79,8 +89,13 @@ export function setPlaybackState(playbackState) {
     return { type: SET_PLAYBACK_STATE, playbackState };
 }
 
+function setPlayerInfo(playerProps, playerItem) {
+    return { type: SET_PLAYER_INFO, playerProps, playerItem };
+}
+
 export function setSettings(settings) {
     return (dispatch) => {
-        dispatch(refreshConnection(settings.ip, () => {}));
+        dispatch(refreshConnection(settings.ip));
+        dispatch({ type: SET_SETTINGS, settings });
     };
 }
