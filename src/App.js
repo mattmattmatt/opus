@@ -41,6 +41,18 @@ class App extends Component {
         });
     }
 
+    onPlaylistItemClick(position) {
+        if (!this.props.hostState.activePlayer) {
+            return;
+        }
+        helpers.sendKodiCommand(this.props.connection, 'Player.Open', {
+            item: {
+                playlistid: this.props.hostState.activePlayer.playerid,
+                position
+            }
+        });
+    }
+
     onIpChange(ip) {
         this.props.dispatch(actions.setSettings({ip}));
     }
@@ -58,14 +70,23 @@ class App extends Component {
                 duration={moment.duration(this.props.hostState.playerInfo.totaltime).asSeconds()}
                 position={moment.duration(this.props.hostState.playerInfo.time).asSeconds()}
                 onSeek={this.onSeek.bind(this)}
-            /> : ''
-        );
+            /> : '');
         return (
             <div className="App">
-                <Settings onIpChange={this.onIpChange.bind(this)} ip={this.props.settings.ip}/>
-                <Remote playbackState={this.props.playbackState} onUpdateClick={this.onUpdateClick.bind(this)} onPlayPauseClick={this.onPlayPauseClick.bind(this)} onStopClick={this.onStopClick.bind(this)}/>
-                {player}
-                <Playlist items={this.props.hostState.playlistItems} />
+                <Settings
+                    onIpChange={this.onIpChange.bind(this)}
+                    ip={this.props.settings.ip}
+                />
+                <Remote
+                    playbackState={this.props.playbackState}
+                    onUpdateClick={this.onUpdateClick.bind(this)}
+                    onPlayPauseClick={this.onPlayPauseClick.bind(this)}
+                    onStopClick={this.onStopClick.bind(this)}
+                /> {player}
+                <Playlist
+                    items={this.props.hostState.playlistItems}
+                    onPlaylistItemClick={this.onPlaylistItemClick.bind(this)}
+                />
             </div>
         );
     }

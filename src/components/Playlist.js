@@ -5,10 +5,10 @@ import PlaylistItem from './PlaylistItem';
 
 export default class Playlist extends Component {
     render() {
-        const items = this.props.items.map((item) => {
+        const items = this.props.items.map((item, index) => {
             return (
                 <li key={item.id}>
-                    <PlaylistItem item={item} />
+                    <PlaylistItem item={item} position={index} onPlaylistItemClick={this.props.onPlaylistItemClick} />
                 </li>
             );
         });
