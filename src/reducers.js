@@ -13,9 +13,13 @@ function hostState(state = defaultHostState, action) {
         }
         case actions.SET_PLAYER_INFO: {
             const hostState = Object.assign({}, state);
-            const [playerProps, playerItem, playlistItems] = action.data;
+            const [playerProps, playerItem] = action.data;
             hostState.playerInfo = Object.assign({}, playerProps, playerItem.item);
-            hostState.playlistItems = playlistItems.items;
+            return hostState;
+        }
+        case actions.SET_PLAYLIST_ITEMS: {
+            const hostState = Object.assign({}, state);
+            hostState.playlistItems = action.playlistItems;
             return hostState;
         }
         default:

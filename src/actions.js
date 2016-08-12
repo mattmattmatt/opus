@@ -10,6 +10,7 @@ export const SET_PLAYBACK_STATE = 'SET_PLAYBACK_STATE';
 export const SET_SETTINGS = 'SET_SETTINGS';
 export const SET_CONNECTION = 'SET_CONNECTION';
 export const SET_PLAYER_INFO = 'SET_PLAYER_INFO';
+export const SET_PLAYLIST_ITEMS = 'SET_PLAYLIST_ITEMS';
 
 /*
  * other constants
@@ -52,9 +53,10 @@ export function fetchHostState() {
     return (dispatch, getState) => {
         const commandBatch = [
             ['Player.GetActivePlayers'],
-            ['XBMC.GetInfoBooleans', { 'booleans': ['Player.Paused', 'Player.Playing'] }]
+            ['XBMC.GetInfoBooleans', { 'booleans': ['Player.Paused', 'Player.Playing'] }],
+            ['Playlist.GetItems', { 'properties': ['title', 'album', 'artist', 'duration'], 'playlistid': 0 }]
         ];
-        return helpers.sendKodiBatch(getState().connection, commandBatch).then(([activePlayers, infoBools]) => {
+        return helpers.sendKodiBatch(getState().connection, commandBatch).then(([activePlayers, infoBools, playlistItems]) => {
             let playbackState;
 
             if ((!infoBools['Player.Paused'] && !infoBools['Player.Playing']) || !activePlayers.length) {
@@ -68,12 +70,12 @@ export function fetchHostState() {
             }
             dispatch(setPlaybackState(playbackState));
             dispatch(setActivePlayer(activePlayers[0]));
+            dispatch(setPlaylistItems(playlistItems.items));
         }, kodiErrorHandler).then(() => {
             if (getState().hostState.activePlayer) {
                 return helpers.sendKodiBatch(getState().connection, [
                     ['Player.GetProperties', [getState().hostState.activePlayer.playerid, ['playlistid','speed','position','totaltime','time','percentage','shuffled','repeat','canrepeat','canshuffle','canseek','partymode']]],
                     ['Player.GetItem', [getState().hostState.activePlayer.playerid, ['title','thumbnail','file','artist','genre','year','rating','album','track','duration','playcount','dateadded','episode','artistid','albumid','tvshowid','fanart']]],
-                    ['Playlist.GetItems', { 'properties': ['title', 'album', 'artist', 'duration'], 'playlistid': 0 }]
                 ]).then((data) => {
                     dispatch(setPlayerInfo(data));
                 });
@@ -88,6 +90,10 @@ export function setActivePlayer(player) {
 
 export function setPlaybackState(playbackState) {
     return { type: SET_PLAYBACK_STATE, playbackState };
+}
+
+export function setPlaylistItems(playlistItems) {
+    return { type: SET_PLAYLIST_ITEMS, playlistItems };
 }
 
 function setPlayerInfo(data) {

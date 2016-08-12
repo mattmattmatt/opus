@@ -59,7 +59,6 @@ export default class Player extends Component {
         }
         return (
             <div className="player">
-                <h2>Player</h2>
                 <h1>{this.props.title}</h1>
                 <h2>{this.props.artist}</h2>
                 <h2>{this.props.album}</h2>

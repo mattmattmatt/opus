@@ -19,6 +19,9 @@ class App extends Component {
 
     onPlayPauseClick() {
         if (!this.props.hostState.activePlayer) {
+            if (this.props.hostState.playlistItems.length > 0) {
+                this.onPlaylistItemClick(0);
+            }
             return;
         }
         helpers.sendKodiCommand(this.props.connection, 'Player.PlayPause', {playerid: this.props.hostState.activePlayer.playerid});
@@ -42,12 +45,9 @@ class App extends Component {
     }
 
     onPlaylistItemClick(position) {
-        if (!this.props.hostState.activePlayer) {
-            return;
-        }
         helpers.sendKodiCommand(this.props.connection, 'Player.Open', {
             item: {
-                playlistid: this.props.hostState.activePlayer.playerid,
+                playlistid: 0,
                 position
             }
         });
