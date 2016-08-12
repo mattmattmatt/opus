@@ -72,9 +72,10 @@ export function fetchHostState() {
             if (getState().hostState.activePlayer) {
                 return helpers.sendKodiBatch(getState().connection, [
                     ['Player.GetProperties', [getState().hostState.activePlayer.playerid, ['playlistid','speed','position','totaltime','time','percentage','shuffled','repeat','canrepeat','canshuffle','canseek','partymode']]],
-                    ['Player.GetItem', [getState().hostState.activePlayer.playerid, ['title','thumbnail','file','artist','genre','year','rating','album','track','duration','playcount','dateadded','episode','artistid','albumid','tvshowid','fanart']]]
-                ]).then(([playerProps, playerItem]) => {
-                    dispatch(setPlayerInfo(playerProps, playerItem));
+                    ['Player.GetItem', [getState().hostState.activePlayer.playerid, ['title','thumbnail','file','artist','genre','year','rating','album','track','duration','playcount','dateadded','episode','artistid','albumid','tvshowid','fanart']]],
+                    ['Playlist.GetItems', { 'properties': ['title', 'album', 'artist', 'duration'], 'playlistid': 0 }]
+                ]).then((data) => {
+                    dispatch(setPlayerInfo(data));
                 });
             }
         });
@@ -89,8 +90,8 @@ export function setPlaybackState(playbackState) {
     return { type: SET_PLAYBACK_STATE, playbackState };
 }
 
-function setPlayerInfo(playerProps, playerItem) {
-    return { type: SET_PLAYER_INFO, playerProps, playerItem };
+function setPlayerInfo(data) {
+    return { type: SET_PLAYER_INFO, data };
 }
 
 export function setSettings(settings) {

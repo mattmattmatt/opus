@@ -3,7 +3,8 @@ import * as actions from './actions';
 
 const defaultHostState = {
     activePlayer: null,
-    playerInfo: {}
+    playerInfo: {},
+    playlistItems: []
 };
 function hostState(state = defaultHostState, action) {
     switch (action.type) {
@@ -12,7 +13,9 @@ function hostState(state = defaultHostState, action) {
         }
         case actions.SET_PLAYER_INFO: {
             const hostState = Object.assign({}, state);
-            hostState.playerInfo = Object.assign({}, action.playerProps, action.playerItem.item);
+            const [playerProps, playerItem, playlistItems] = action.data;
+            hostState.playerInfo = Object.assign({}, playerProps, playerItem.item);
+            hostState.playlistItems = playlistItems.items;
             return hostState;
         }
         default:

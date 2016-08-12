@@ -6,6 +6,7 @@ import './App.css';
 
 import Remote from './components/Remote';
 import Player from './components/Player';
+import Playlist from './components/Playlist';
 import Settings from './components/Settings';
 import * as actions from './actions';
 import * as helpers from './helpers';
@@ -64,6 +65,7 @@ class App extends Component {
                 <Settings onIpChange={this.onIpChange.bind(this)} ip={this.props.settings.ip}/>
                 <Remote playbackState={this.props.playbackState} onUpdateClick={this.onUpdateClick.bind(this)} onPlayPauseClick={this.onPlayPauseClick.bind(this)} onStopClick={this.onStopClick.bind(this)}/>
                 {player}
+                <Playlist items={this.props.hostState.playlistItems} />
             </div>
         );
     }
