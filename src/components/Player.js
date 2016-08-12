@@ -16,6 +16,9 @@ export default class Player extends Component {
         this.debouncedDrag = throttle((event, position) => {
             let newPercentage = (position.x / this.refs.seeker.clientWidth);
             newPercentage = Math.round(Math.max(Math.min(newPercentage, 1), 0) * 100);
+            this.setState({
+                seekPos: newPercentage / 100
+            });
             this.props.onSeek(newPercentage);
         }, 500);
     }
@@ -27,12 +30,13 @@ export default class Player extends Component {
     }
 
     handleDragStop(event, position) {
-        let newPercentage = (position.x / this.refs.seeker.clientWidth);
-        newPercentage = Math.round(Math.max(Math.min(newPercentage, 1), 0) * 100);
-        this.setState({
-            seekPos: newPercentage / 100
-        });
-        this.props.onSeek(newPercentage);
+        this.debouncedDrag(event, position);
+        // only block seek position for another 1000ms
+        setTimeout(() => {
+            this.setState({
+                seekPos: null
+            });
+        }, 1000);
     }
 
     render() {
