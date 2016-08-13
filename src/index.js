@@ -10,11 +10,15 @@ import App from './App';
 import './styles/index.css';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import injectTapEventPlugin from 'react-tap-event-plugin';
+import createDebounce from 'redux-debounced';
 
 // Needed for onTouchTap for Material UI
 injectTapEventPlugin();
 
-let store = createStore(appReducer, window.devToolsExtension && window.devToolsExtension(), applyMiddleware(thunkMiddleware/*, loggerMiddleware*/));
+let store = createStore(
+    appReducer,
+    window.devToolsExtension && window.devToolsExtension(),
+    applyMiddleware(createDebounce(), thunkMiddleware/*, loggerMiddleware*/));
 
 // import * as actions from './actions';
 

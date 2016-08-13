@@ -31,7 +31,7 @@ function kodiErrorHandler(error) {
 }
 
 function refreshConnection(ip) {
-    return (dispatch) => {
+    const thunk = (dispatch) => {
         const notificationCallback = () => {
             dispatch(fetchHostState());
             setTimeout(() => {dispatch(fetchHostState());}, 250);
@@ -43,10 +43,29 @@ function refreshConnection(ip) {
             c.notification('Player.OnStop', notificationCallback);
             c.notification('Player.OnSeek', notificationCallback);
             c.notification('Player.OnPropertyChanged', notificationCallback);
+            c.notification('Playlist.OnAdd', notificationCallback);
+            c.notification('Playlist.OnRemove', notificationCallback);
+            c.notification('Playlist.OnClear', notificationCallback);
+            c.notification('VideoLibrary.OnUpdate', notificationCallback);
+            c.notification('VideoLibrary.OnRemove', notificationCallback);
+            c.notification('VideoLibrary.OnScanFinished', notificationCallback);
+            c.notification('VideoLibrary.OnCleanFinished', notificationCallback);
+            c.notification('AudioLibrary.OnUpdate', notificationCallback);
+            c.notification('AudioLibrary.OnRemove', notificationCallback);
+            c.notification('AudioLibrary.OnScanFinished', notificationCallback);
+            c.notification('AudioLibrary.OnCleanFinished', notificationCallback);
+            c.notification('System.OnWake', notificationCallback);
             dispatch(setConnection(c));
             dispatch(fetchHostState());
         });
     };
+    thunk.meta = {
+        debounce: {
+            time: 2000,
+            key: 'my-thunk-action'
+        }
+    };
+    return thunk;
 }
 
 export function setConnection(connection) {
