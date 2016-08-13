@@ -9,6 +9,16 @@ import Playlist from './components/Playlist';
 import Settings from './components/Settings';
 import * as actions from './actions';
 import * as helpers from './helpers';
+import MenuItem from 'material-ui/MenuItem';
+import IconMenu from 'material-ui/IconMenu';
+import IconButton from 'material-ui/IconButton';
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+import {Toolbar, ToolbarGroup, ToolbarTitle} from 'material-ui/Toolbar';
+import ui from 'redux-ui';
+
+const defaultUiState = {
+    settingsActive: false
+};
 
 class App extends Component {
 
@@ -65,6 +75,10 @@ class App extends Component {
         this.props.dispatch(actions.setSettings({ip}));
     }
 
+    showSettings() {
+        this.props.updateUI({settingsActive: true});
+    }
+
     onRequestTimeUpdate() {
         this.props.dispatch(actions.updateCurrentTime());
     }
@@ -97,6 +111,29 @@ class App extends Component {
             /> : '');
         return (
             <div className="App">
+                <Toolbar>
+                    <ToolbarGroup>
+                        <ToolbarTitle text="Opus" />
+                    </ToolbarGroup>
+                    <ToolbarGroup>
+                        <IconMenu
+                            anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                            targetOrigin={{horizontal: 'right', vertical: 'top'}}
+                            iconButtonElement={
+                                <IconButton
+                                    touch={true}
+                                >
+                                    <MoreVertIcon />
+                                </IconButton>
+                            }
+                        >
+                            <MenuItem
+                                primaryText="Settings"
+                                onClick={this.showSettings.bind(this)}
+                            />
+                        </IconMenu>
+                    </ToolbarGroup>
+                </Toolbar>
                 <Settings
                     onIpChange={this.onIpChange.bind(this)}
                     ip={this.props.settings.ip}
@@ -122,5 +159,7 @@ class App extends Component {
 function mapStateToProps(state) {
     return state;
 }
-
-export default connect(mapStateToProps)(App);
+let connectedApp = App;
+connectedApp = ui({key: 'main', state: defaultUiState})(connectedApp);
+connectedApp = connect(mapStateToProps)(connectedApp);
+export default connectedApp;

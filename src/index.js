@@ -8,6 +8,11 @@ import thunkMiddleware from 'redux-thunk';
 import appReducer from './reducers';
 import App from './App';
 import './styles/index.css';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import injectTapEventPlugin from 'react-tap-event-plugin';
+
+// Needed for onTouchTap for Material UI
+injectTapEventPlugin();
 
 let store = createStore(appReducer, window.devToolsExtension && window.devToolsExtension(), applyMiddleware(thunkMiddleware/*, loggerMiddleware*/));
 
@@ -23,6 +28,8 @@ let store = createStore(appReducer, window.devToolsExtension && window.devToolsE
 
 render((
     <Provider store={store}>
-        <App />
+        <MuiThemeProvider>
+            <App />
+        </MuiThemeProvider>
     </Provider>
 ), window.document.getElementById('root'));

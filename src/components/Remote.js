@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 
 import * as actions from '../actions';
+import * as UI from 'material-ui';
 
 export default class Remote extends Component {
     shouldComponentUpdate(nextProps) {
@@ -8,20 +9,24 @@ export default class Remote extends Component {
     }
     render() {
         const stopButton = this.props.playbackState === actions.PlaybackStates.STOPPED ? '' : (
-            <button onClick={this.props.onStopClick}>
-                Stop
-            </button>
+            <UI.RaisedButton
+                onClick={this.props.onStopClick}
+                label="Stop"
+            />
         );
         return (
             <div >
                 <h1>{this.props.playbackState}</h1>
-                <button onClick={this.props.onPlayPauseClick}>
-                    { this.props.playbackState === actions.PlaybackStates.PLAYING ? 'Pause' : 'Play'}
-                </button>
+                <UI.RaisedButton
+                    onClick={this.props.onPlayPauseClick}
+                    label={this.props.playbackState === actions.PlaybackStates.PLAYING ? 'Pause' : 'Play'}
+                />
+
                 {stopButton}
-                <button onClick={this.props.onUpdateClick}>
-                    Update state
-                </button>
+                <UI.RaisedButton
+                    label="Update state"
+                    onClick={this.props.onUpdateClick}
+                />
             </div>
         );
     }

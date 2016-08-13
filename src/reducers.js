@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 import * as actions from './actions';
 import moment from 'moment';
+import { reducer as uiReducer } from 'redux-ui';
 
 const defaultHostState = {
     activePlayer: null,
@@ -69,7 +70,8 @@ const app = combineReducers({
     hostState,
     playbackState,
     settings,
-    connection
+    connection,
+    ui: uiReducer
 });
 
 export default app;
