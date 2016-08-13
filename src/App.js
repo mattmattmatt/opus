@@ -1,19 +1,15 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 
-import './App.css';
+import './styles/app.css';
 
 import Remote from './components/Remote';
-import Player from './components/Player';
-import Playlist from './components/Playlist';
 import Settings from './components/Settings';
+import Header from './components/Header';
+import Sidebar from './components/Sidebar';
 import * as actions from './actions';
 import * as helpers from './helpers';
-import MenuItem from 'material-ui/MenuItem';
-import IconMenu from 'material-ui/IconMenu';
-import IconButton from 'material-ui/IconButton';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import {Toolbar, ToolbarGroup, ToolbarTitle} from 'material-ui/Toolbar';
+
 import ui from 'redux-ui';
 
 const defaultUiState = {
@@ -43,44 +39,8 @@ class App extends Component {
         helpers.sendKodiCommand(this.props.connection, 'Player.Stop', {playerid: this.props.hostState.activePlayer.playerid});
     }
 
-    onSeek(newPerc) {
-        if (!this.props.hostState.activePlayer) {
-            return;
-        }
-        helpers.sendKodiCommand(this.props.connection, 'Player.Seek', {
-            playerid: this.props.hostState.activePlayer.playerid,
-            value: newPerc
-        });
-    }
-
-    playlistItemPlay(position) {
-        helpers.sendKodiCommand(this.props.connection, 'Player.Open', {
-            item: {
-                playlistid: 0,
-                position
-            }
-        });
-    }
-
-    playlistItemRemove(position) {
-        helpers.sendKodiCommand(this.props.connection, 'Playlist.Remove', {
-            playlistid: 0,
-            position
-        }).then(() => {
-            this.props.dispatch(actions.fetchHostState());
-        });
-    }
-
     onIpChange(ip) {
         this.props.dispatch(actions.setSettings({ip}));
-    }
-
-    showSettings() {
-        this.props.updateUI({settingsActive: true});
-    }
-
-    onRequestTimeUpdate() {
-        this.props.dispatch(actions.updateCurrentTime());
     }
 
     componentWillMount() {
@@ -98,59 +58,29 @@ class App extends Component {
     }
 
     render() {
-        const player = (this.props.hostState.playerInfo ?
-            <Player
-                title={this.props.hostState.playerInfo.title}
-                artist={(this.props.hostState.playerInfo.artist || []).join(', ')}
-                album={this.props.hostState.playerInfo.album}
-                duration={this.props.hostState.playerInfo.totaltime}
-                position={this.props.hostState.playerInfo.time + this.props.hostState.playerInfo.timedelta}
-                onSeek={this.onSeek.bind(this)}
-                onRequestTimeUpdate={this.onRequestTimeUpdate.bind(this)}
-                playbackState={this.props.playbackState}
-            /> : '');
         return (
-            <div className="App">
-                <Toolbar>
-                    <ToolbarGroup>
-                        <ToolbarTitle text="Opus" />
-                    </ToolbarGroup>
-                    <ToolbarGroup>
-                        <IconMenu
-                            anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                            targetOrigin={{horizontal: 'right', vertical: 'top'}}
-                            iconButtonElement={
-                                <IconButton
-                                    touch={true}
-                                >
-                                    <MoreVertIcon />
-                                </IconButton>
-                            }
-                        >
-                            <MenuItem
-                                primaryText="Settings"
-                                onClick={this.showSettings.bind(this)}
+            <div className="app">
+                <div className="header-container">
+                    <Header />
+                </div>
+                <div className="meat">
+                    <div className="remote-container">
+                        <Remote
+                            playbackState={this.props.playbackState}
+                            onUpdateClick={this.onUpdateClick.bind(this)}
+                            onPlayPauseClick={this.onPlayPauseClick.bind(this)}
+                            onStopClick={this.onStopClick.bind(this)}
+                        />
+                    </div>
+                    <div className="sidebar-container">
+                        <Sidebar
+                            {...this.props}
                             />
-                        </IconMenu>
-                    </ToolbarGroup>
-                </Toolbar>
+                    </div>
+                </div>
                 <Settings
                     onIpChange={this.onIpChange.bind(this)}
                     ip={this.props.settings.ip}
-                />
-                <Remote
-                    playbackState={this.props.playbackState}
-                    onUpdateClick={this.onUpdateClick.bind(this)}
-                    onPlayPauseClick={this.onPlayPauseClick.bind(this)}
-                    onStopClick={this.onStopClick.bind(this)}
-                />
-                {player}
-                <Playlist
-                    items={this.props.hostState.playlistItems}
-                    onPlaylistItemPlay={this.playlistItemPlay.bind(this)}
-                    onPlaylistItemRemove={this.playlistItemRemove.bind(this)}
-                    activeItemIndex={this.props.hostState.playerInfo.position}
-                    playbackState={this.props.playbackState}
                 />
             </div>
         );

@@ -40,15 +40,16 @@ export default class Player extends Component {
         }, 1000);
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate() {
         if (this.props.playbackState === actions.PlaybackStates.PLAYING) {
-            if (prevProps.playbackState !== actions.PlaybackStates.PLAYING) {
+            if (!this.timer) {
                 this.timer = setInterval(() => {
                     this.props.onRequestTimeUpdate();
                 }, 1000);
             }
         } else {
             clearInterval(this.timer);
+            this.timer = null;
         }
     }
 
