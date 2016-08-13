@@ -17,11 +17,15 @@ function hostState(state = defaultHostState, action) {
             return Object.assign({}, state, {activePlayer: action.player});
         }
         case actions.SET_PLAYER_INFO: {
-            const hostState = Object.assign({}, state);
-            const [playerProps, playerItem] = action.data;
-            hostState.playerInfo = Object.assign({}, playerProps, playerItem.item, { lastUpdated: new Date().getTime() });
-            hostState.playerInfo.time = moment.duration(hostState.playerInfo.time).asSeconds();
-            hostState.playerInfo.totaltime = moment.duration(hostState.playerInfo.totaltime).asSeconds();
+            let hostState = Object.assign({}, state);
+            if (action.data) {
+                const [playerProps, playerItem] = action.data;
+                hostState.playerInfo = Object.assign({}, playerProps, playerItem.item, { lastUpdated: new Date().getTime() });
+                hostState.playerInfo.time = moment.duration(hostState.playerInfo.time).asSeconds();
+                hostState.playerInfo.totaltime = moment.duration(hostState.playerInfo.totaltime).asSeconds();
+            } else {
+                hostState.playerInfo = defaultHostState.playerInfo;
+            }
             return hostState;
         }
         case actions.UPDATE_CURRENT_IIME: {

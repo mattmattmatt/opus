@@ -1,7 +1,9 @@
 import React, {Component} from 'react';
 
-// import * as actions from '../actions';
+import * as actions from '../actions';
 import PlaylistItem from './PlaylistItem';
+import {List} from 'material-ui/List';
+import Subheader from 'material-ui/Subheader';
 
 export default class Playlist extends Component {
     render() {
@@ -10,22 +12,22 @@ export default class Playlist extends Component {
         }
         const items = this.props.items.map((item, index) => {
             return (
-                <li key={item.id}>
-                    <PlaylistItem
-                        item={item}
-                        position={index}
-                        onPlaylistItemPlay={this.props.onPlaylistItemPlay}
-                        onPlaylistItemRemove={this.props.onPlaylistItemRemove}
-                        isPlaying={this.props.activeItemIndex === index}
-                    />
-                </li>
+                <PlaylistItem
+                    key={item.id}
+                    item={item}
+                    position={index}
+                    onPlaylistItemPlay={this.props.onPlaylistItemPlay}
+                    onPlaylistItemRemove={this.props.onPlaylistItemRemove}
+                    isPlaying={this.props.activeItemIndex === index && this.props.playbackState !== actions.PlaybackStates.STOPPED}
+                />
             );
         });
 
         return (
-            <ul >
+            <List>
+                 <Subheader>Playlist</Subheader>
                 {items}
-            </ul>
+            </List>
         );
     }
 }

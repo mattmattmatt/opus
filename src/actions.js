@@ -103,6 +103,8 @@ export function fetchHostState() {
                     dispatch(setPlayerInfo(data));
                     dispatch(updateCurrentTime());
                 });
+            } else {
+                dispatch(setPlayerInfo());
             }
         });
     };
@@ -130,7 +132,7 @@ function setPlayerInfo(data) {
 
 export function setSettings(settings) {
     return (dispatch) => {
-        dispatch(refreshConnection(settings.ip));
         dispatch({ type: SET_SETTINGS, settings });
+        dispatch(refreshConnection(settings.ip));
     };
 }

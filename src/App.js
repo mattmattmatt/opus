@@ -150,6 +150,7 @@ class App extends Component {
                     onPlaylistItemPlay={this.playlistItemPlay.bind(this)}
                     onPlaylistItemRemove={this.playlistItemRemove.bind(this)}
                     activeItemIndex={this.props.hostState.playerInfo.position}
+                    playbackState={this.props.playbackState}
                 />
             </div>
         );

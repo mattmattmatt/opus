@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
-
-// import * as actions from '../actions';
+import {ListItem} from 'material-ui/List';
+import ActionDelete from 'material-ui/svg-icons/action/delete';
+import ActionPlayArrow from 'material-ui/svg-icons/av/play-arrow';
+import NowPlaying from '../assets/now-playing.gif';
 
 export default class PlaylistItem extends Component {
     onPlaylistItemPlay() {
@@ -12,19 +14,18 @@ export default class PlaylistItem extends Component {
     }
 
     render() {
-        var buttons = !this.props.isPlaying ? (
-            <div>
-                <button onClick={this.onPlaylistItemPlay.bind(this)}>Play</button>
-                <button onClick={this.onPlaylistItemRemove.bind(this)}>Remove</button>
-            </div>
-        ) : '';
         return (
-            <div>
-                <h4>
-                    {this.props.item.title}
-                    {buttons}
-                </h4>
-            </div>
+            <ListItem
+                primaryText={this.props.item.title}
+                secondaryText={this.props.item.artist || ''}
+                rightIcon={!this.props.isPlaying ? <ActionDelete onClick={this.onPlaylistItemRemove.bind(this)} /> : <span />}
+                leftIcon={
+                    !this.props.isPlaying ?
+                    <ActionPlayArrow onClick={this.onPlaylistItemPlay.bind(this)} /> :
+                    <img src={NowPlaying} alt="Playing" />
+                }
+            >
+            </ListItem>
         );
     }
 }
