@@ -1,32 +1,94 @@
 .player {
     position: relative;
-    border: 1px solid black;
-    padding: 20px;
-    margin: 0 20px;
+    color: black;
+    min-height: 250px;
+    max-height: 400px;
+    overflow: hidden;
+}
+
+.player__bg {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain, cover;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+}
+
+.player__bg--blur {
+    filter: blur(10px);
+    background-size: cover;
+    background-color: white;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+}
+
+.player__content {
+    padding: 40px 20px 20px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.player__content {
+    background-color: rgba(255, 255, 255, 0.6);
+    background: linear-gradient(0deg, rgba(255,255,255,1) 10%, rgba(255,255,255,0.7) 70%, rgba(255,255,255,0) 100%);
+}
+
+.playerinfo {
+    line-height: 1.5;
+}
+
+.playerinfo__element {
+    display: block;
+}
+
+.playerinfo__element--title {
+    font-weight: bold;
+}
+
+.playerinfo__element--album {
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.seeker-container {
+    display: flex;
+    line-height: 15px;
 }
 
 .seeker {
     position: relative;
-    height: 20px;
+    height: 2px;
     width: 100%;
-    background-color: lightblue;
-    overflow: 'auto'
+    background-color: rgba(0,0,0,0.6);
+    overflow: visible;
+}
+
+.seeker__time {
+    position: relative;
+    top: -5px;
+    padding: 0 15px;
+}
+
+.seeker__time:last-child {
+    padding-right: 0;
+}
+
+.seeker__time:first-child {
+    padding-left: 0;
 }
 
 .seeker__position {
     position: absolute;
-    top: 5px;
-    /*left: 0px;*/
-    width: 10px;
-    height: 10px;
+    top: -6px;
+    width: 15px;
+    height: 15px;
     border-radius: 50%;
     background-color: black;
     cursor: pointer;
-}
-
-.seeker__time {
-    position: absolute;
-    right: 0px;
-    padding: 0;
-    margin: 0;
 }

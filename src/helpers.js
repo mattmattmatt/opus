@@ -47,3 +47,7 @@ export function sendKodiBatch(connection, batchArray) {
 
     return Promise.all(promises);
 }
+
+export function getHostImage(ip, uri) {
+    return uri ? 'http://' + ip + '/image/' + encodeURIComponent(uri) : '';
+}

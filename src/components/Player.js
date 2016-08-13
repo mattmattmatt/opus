@@ -53,6 +53,17 @@ export default class Player extends Component {
         }
     }
 
+    getStyle() {
+        return {
+            blur: {
+                backgroundImage: 'url("' + this.props.cover + '")'
+            },
+            cover: {
+                backgroundImage: 'url("' + this.props.cover + '"), radial-gradient(ellipse at center, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.4) 100%)'
+            }
+        };
+    }
+
     render() {
         let pos = {
             x: 0,
@@ -73,29 +84,36 @@ export default class Player extends Component {
         }
         return (
             <div className="player">
-                <h1>{this.props.title}</h1>
-                <h2>{this.props.artist}</h2>
-                <h2>{this.props.album}</h2>
-                <div className="seeker" ref="seeker">
-                    <p className="seeker__time">
-                        <span className="seeker__current-time">
-                            {currentTime.format(timeFormat, { trim: false })}&nbsp;/&nbsp;
+                <div className="player__bg player__bg--blur" style={this.getStyle().cover} />
+                <div className="player__bg" style={this.getStyle().cover} />
+                <div className="player__content player__content--bg" />
+                <div className="player__content">
+                    <p className="playerinfo">
+                        <span className="playerinfo__element playerinfo__element--title">{this.props.title}</span>
+                        <span className="playerinfo__element playerinfo__element--artist">{this.props.artist}</span>
+                        <span className="playerinfo__element playerinfo__element--album">{this.props.album}</span>
+                    </p>
+                    <div className="seeker-container">
+                        <span className="seeker__time seeker__time--current-time">
+                            {currentTime.format(timeFormat, { trim: false })}
                         </span>
-                        <span className="seeker__total-time">
+                        <div className="seeker" ref="seeker">
+                            <Draggable
+                                // bounds="parent"
+                                axis="x"
+                                position={pos}
+                                onStart={this.handleDragStart.bind(this)}
+                                onDrag={this.debouncedDrag}
+                                onStop={this.handleDragStop.bind(this)}
+                                zindex={100}
+                                >
+                                <div className="seeker__position" />
+                            </Draggable>
+                        </div>
+                        <span className="seeker__time seeker__time--total-time">
                             {totalTime.format(timeFormat, { trim: false })}
                         </span>
-                    </p>
-                    <Draggable
-                        // bounds="parent"
-                        axis="x"
-                        position={pos}
-                        onStart={this.handleDragStart.bind(this)}
-                        onDrag={this.debouncedDrag}
-                        onStop={this.handleDragStop.bind(this)}
-                        zindex={100}
-                    >
-                        <div className="seeker__position" />
-                    </Draggable>
+                    </div>
                 </div>
             </div>
         );

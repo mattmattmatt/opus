@@ -52,6 +52,7 @@ class Sidebar extends Component {
                 onSeek={this.onSeek.bind(this)}
                 onRequestTimeUpdate={this.onRequestTimeUpdate.bind(this)}
                 playbackState={this.props.playbackState}
+                cover={helpers.getHostImage(this.props.settings.ip, this.props.hostState.playerInfo.thumbnail)}
             /> : <span />);
         const playlist = (
             <Playlist

@@ -18,14 +18,14 @@ body {
 
 .meat {
     display: flex;
-    flex-grow: 0;
+    flex-grow: 1;
     flex-shrink: 1;
 }
 
 .sidebar-container {
     max-width: 400px;
     min-width: 250px;
-    flex-grow: 0;
+    flex-grow: 1;
     flex-shrink: 1;
 }
 
