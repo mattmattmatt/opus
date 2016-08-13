@@ -31,7 +31,7 @@ function hostState(state = defaultHostState, action) {
         }
         case actions.SET_PLAYLIST_ITEMS: {
             const hostState = Object.assign({}, state);
-            hostState.playlistItems = action.playlistItems;
+            hostState.playlistItems = action.playlistItems || [];
             return hostState;
         }
         default:

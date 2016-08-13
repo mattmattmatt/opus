@@ -5,6 +5,9 @@ import PlaylistItem from './PlaylistItem';
 
 export default class Playlist extends Component {
     render() {
+        if (!this.props.items || !this.props.items.length) {
+            return <span />;
+        }
         const items = this.props.items.map((item, index) => {
             return (
                 <li key={item.id}>
