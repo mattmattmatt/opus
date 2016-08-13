@@ -38,6 +38,7 @@ function refreshConnection(ip) {
         };
         connection = kodi(ip, 9090);
         connection.then(c => {
+            console.info('Socket connected.');
             c.notification('Player.OnPause', notificationCallback);
             c.notification('Player.OnPlay', notificationCallback);
             c.notification('Player.OnStop', notificationCallback);
@@ -55,6 +56,14 @@ function refreshConnection(ip) {
             c.notification('AudioLibrary.OnScanFinished', notificationCallback);
             c.notification('AudioLibrary.OnCleanFinished', notificationCallback);
             c.notification('System.OnWake', notificationCallback);
+            c.on('error', (e) => {
+                console.warn('Socket error, attemting reconnect.', e);
+                dispatch(refreshConnection(ip));
+            });
+            c.on('close', () => {
+                console.warn('Socket closed, attemting reconnect.');
+                dispatch(refreshConnection(ip));
+            });
             dispatch(setConnection(c));
             dispatch(fetchHostState());
         });
