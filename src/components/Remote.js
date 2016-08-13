@@ -23,10 +23,6 @@ export default class Remote extends Component {
                 />
 
                 {stopButton}
-                <UI.RaisedButton
-                    label="Update state"
-                    onClick={this.props.onUpdateClick}
-                />
             </div>
         );
     }

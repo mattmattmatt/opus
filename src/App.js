@@ -61,13 +61,14 @@ class App extends Component {
         return (
             <div className="app">
                 <div className="header-container">
-                    <Header />
+                    <Header
+                        onUpdateClick={this.onUpdateClick.bind(this)}
+                    />
                 </div>
                 <div className="meat">
                     <div className="remote-container">
                         <Remote
                             playbackState={this.props.playbackState}
-                            onUpdateClick={this.onUpdateClick.bind(this)}
                             onPlayPauseClick={this.onPlayPauseClick.bind(this)}
                             onStopClick={this.onStopClick.bind(this)}
                         />

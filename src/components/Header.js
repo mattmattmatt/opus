@@ -11,6 +11,10 @@ class Header extends Component {
         this.props.updateUI({settingsActive: true});
     }
 
+    onUpdateClick() {
+        this.props.onUpdateClick();
+    }
+
     render() {
         return (
             <Toolbar>
@@ -29,6 +33,10 @@ class Header extends Component {
                             </IconButton>
                         }
                     >
+                        <MenuItem
+                            primaryText="Refresh state"
+                            onClick={this.onUpdateClick.bind(this)}
+                        />
                         <MenuItem
                             primaryText="Settings"
                             onClick={this.showSettings.bind(this)}
