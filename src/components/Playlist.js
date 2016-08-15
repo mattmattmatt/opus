@@ -3,9 +3,16 @@ import React, {Component} from 'react';
 import * as actions from '../actions';
 import PlaylistItem from './PlaylistItem';
 import {List} from 'material-ui/List';
-import Subheader from 'material-ui/Subheader';
+import _ from 'lodash/core';
 
 export default class Playlist extends Component {
+    shouldComponentUpdate(nextProps) {
+        const picks = ['items', 'activeItemIndex', 'playbackState'];
+        const newProps = _.pick(nextProps, picks);
+        const oldProps = _.pick(this.props, picks);
+       return !_.isEqual(newProps, oldProps);
+    }
+
     render() {
         if (!this.props.items || !this.props.items.length) {
             return <span />;
@@ -13,7 +20,7 @@ export default class Playlist extends Component {
         const items = this.props.items.map((item, index) => {
             return (
                 <PlaylistItem
-                    key={item.id}
+                    key={item.id + '-' + index}
                     item={item}
                     position={index}
                     onPlaylistItemPlay={this.props.onPlaylistItemPlay}
@@ -25,7 +32,6 @@ export default class Playlist extends Component {
 
         return (
             <List>
-                 <Subheader>Playlist</Subheader>
                 {items}
             </List>
         );

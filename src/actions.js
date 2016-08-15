@@ -1,5 +1,21 @@
 import kodi from 'kodi-ws';
 import * as helpers from './helpers';
+import { normalize, Schema, arrayOf } from 'normalizr';
+import throttle from 'lodash.throttle';
+
+const album = new Schema('albums', {
+    idAttribute: 'albumid'
+});
+const artist = new Schema('artists', {
+    idAttribute: 'artistid'
+});
+
+album.define({
+  artists: arrayOf(artist),
+});
+
+artist.define({});
+
 
 /*
  * action types
@@ -12,6 +28,7 @@ export const SET_CONNECTION = 'SET_CONNECTION';
 export const SET_PLAYER_INFO = 'SET_PLAYER_INFO';
 export const SET_PLAYLIST_ITEMS = 'SET_PLAYLIST_ITEMS';
 export const UPDATE_CURRENT_IIME = 'UPDATE_CURRENT_IIME';
+export const SET_SECTION = 'SET_SECTION';
 
 /*
  * other constants
@@ -32,10 +49,10 @@ function kodiErrorHandler(error) {
 
 function refreshConnection(ip) {
     const thunk = (dispatch) => {
-        const notificationCallback = () => {
+        const notificationCallback = throttle(() => {
             dispatch(fetchHostState());
             setTimeout(() => {dispatch(fetchHostState());}, 250);
-        };
+        }, 500);
         connection = kodi(ip, 9090);
         connection.then(c => {
             console.info('Socket connected.');
@@ -143,5 +160,40 @@ export function setSettings(settings) {
     return (dispatch) => {
         dispatch({ type: SET_SETTINGS, settings });
         dispatch(refreshConnection(settings.ip));
+    };
+}
+
+export function setSection(sectionPath, sectionData) {
+    return { type: SET_SECTION, sectionPath, sectionData };
+}
+
+export function navigateTo(path, updateUi) {
+    return (dispatch, getState) => {
+        switch (path) {
+            case '/music':
+                updateUi({ activeSection: 'music' });
+                helpers.sendKodiBatch(getState().connection, [
+                    ['AudioLibrary.GetAlbums',
+                        {
+                            properties: ['playcount', 'artist', 'artistid', 'genre', 'rating', 'thumbnail', 'year', 'mood', 'style', 'title', 'displayartist'],
+                            sort: { order: 'ascending', method: 'none', ignorearticle: true },
+                            limits: { start: 0, end: 10 }
+                        }
+                    ],
+                    ['AudioLibrary.GetArtists',
+                        {
+                            properties: ['thumbnail', 'fanart', 'born', 'formed', 'died', 'disbanded', 'yearsactive', 'mood', 'style', 'genre'],
+                            sort: { order: 'ascending', method: 'none', ignorearticle: true },
+                            limits: { start: 0, end: 10 }
+                        }
+                    ],
+                ]).then(([albums, artists]) => {
+                    albums = normalize(helpers.prepareAlbumsForNormalization(albums.albums, getState().settings.ip), arrayOf(album));
+                    artists = normalize(helpers.prepareArtistsForNormalization(artists.artists, getState().settings.ip), arrayOf(artist));
+                    dispatch(this.setSection(path, {albums, artists}));
+                });
+                break;
+            default:
+        }
     };
 }

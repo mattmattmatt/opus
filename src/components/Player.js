@@ -28,6 +28,7 @@ export default class Player extends Component {
     }
 
     handleDragStart() {
+        this.stopTimeTimer();
     }
 
     handleDragStop(event, position) {
@@ -37,19 +38,28 @@ export default class Player extends Component {
             this.setState({
                 seekPos: null
             });
+            this.startTimeTimer();
         }, 1000);
+    }
+
+    startTimeTimer() {
+        if (!this.timer) {
+            this.timer = setInterval(() => {
+                this.props.onRequestTimeUpdate();
+            }, 1000);
+        }
+    }
+
+    stopTimeTimer() {
+        clearInterval(this.timer);
+        this.timer = null;
     }
 
     componentDidUpdate() {
         if (this.props.playbackState === actions.PlaybackStates.PLAYING) {
-            if (!this.timer) {
-                this.timer = setInterval(() => {
-                    this.props.onRequestTimeUpdate();
-                }, 1000);
-            }
+            this.startTimeTimer();
         } else {
-            clearInterval(this.timer);
-            this.timer = null;
+            this.stopTimeTimer();
         }
     }
 
@@ -103,7 +113,7 @@ export default class Player extends Component {
                                 axis="x"
                                 position={pos}
                                 onStart={this.handleDragStart.bind(this)}
-                                onDrag={this.debouncedDrag}
+                                onDrag={undefined/*this.debouncedDrag*/}
                                 onStop={this.handleDragStop.bind(this)}
                                 zindex={100}
                                 >

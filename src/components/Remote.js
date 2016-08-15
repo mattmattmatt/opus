@@ -16,7 +16,7 @@ export default class Remote extends Component {
         );
         return (
             <div >
-                <h1>{this.props.playbackState}</h1>
+                {this.props.playbackState} &nbsp;
                 <UI.RaisedButton
                     onClick={this.props.onPlayPauseClick}
                     label={this.props.playbackState === actions.PlaybackStates.PLAYING ? 'Pause' : 'Play'}

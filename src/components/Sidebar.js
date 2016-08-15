@@ -26,7 +26,7 @@ class Sidebar extends Component {
     playlistItemPlay(position) {
         helpers.sendKodiCommand(this.props.connection, 'Player.Open', {
             item: {
-                playlistid: 0,
+                playlistid: this.props.hostState.playerInfo.playlistid,
                 position
             }
         });
@@ -34,7 +34,7 @@ class Sidebar extends Component {
 
     playlistItemRemove(position) {
         helpers.sendKodiCommand(this.props.connection, 'Playlist.Remove', {
-            playlistid: 0,
+            playlistid: this.props.hostState.playerInfo.playlistid,
             position
         }).then(() => {
             this.props.dispatch(actions.fetchHostState());

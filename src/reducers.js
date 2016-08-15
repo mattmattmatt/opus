@@ -52,6 +52,24 @@ function settings(state = {}, action) {
     }
 }
 
+const defaultSectionState = {
+    sectionPath: '/',
+    sectionData: {}
+};
+function section(state = defaultSectionState, action) {
+    switch (action.type) {
+        case actions.SET_SECTION:{
+            const { sectionPath, sectionData} = action;
+            return {
+                sectionPath,
+                sectionData
+            };
+        }
+        default:
+            return state;
+    }
+}
+
 function connection(state = {}, action) {
     switch (action.type) {
         case actions.SET_CONNECTION:
@@ -75,6 +93,7 @@ const app = combineReducers({
     playbackState,
     settings,
     connection,
+    section,
     ui: uiReducer
 });
 

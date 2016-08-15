@@ -7,19 +7,31 @@ import Remote from './components/Remote';
 import Settings from './components/Settings';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
+import Browser from './components/Browser';
 import * as actions from './actions';
 import * as helpers from './helpers';
+import Uri from 'jsuri';
 
 import ui from 'redux-ui';
 
 const defaultUiState = {
-    settingsActive: false
+    settingsActive: false,
+    activeSection: undefined
 };
 
 class App extends Component {
 
     onUpdateClick() {
         this.props.dispatch(actions.fetchHostState());
+    }
+
+    onPlaylistClearClick() {
+        helpers.sendKodiCommand(this.props.connection, 'Playlist.Clear', {playlistid: this.props.hostState.playerInfo.playlistid || 0});
+    }
+
+    navigateTo(path) {
+        const uri = new Uri(path);
+        this.props.dispatch(actions.navigateTo(uri.path(), this.props.updateUI));
     }
 
     onPlayPauseClick() {
@@ -37,6 +49,26 @@ class App extends Component {
             return;
         }
         helpers.sendKodiCommand(this.props.connection, 'Player.Stop', {playerid: this.props.hostState.activePlayer.playerid});
+    }
+
+    onPlayArtist(artistid) {
+        let nextPlaylistPosition = this.props.hostState.playerInfo.position;
+        if (typeof nextPlaylistPosition === 'undefined' || this.props.hostState.playlistItems.length === 0) {
+            nextPlaylistPosition = 0;
+        }
+        const playlistToInsertTo = this.props.hostState.playerInfo.playlistid || 0;
+        helpers.sendKodiCommand(this.props.connection, 'Playlist.Insert', {
+            playlistid: playlistToInsertTo,
+            position: nextPlaylistPosition,
+            item: {artistid}
+        }).then(() => {
+            helpers.sendKodiCommand(this.props.connection, 'Player.Open', {
+                item: {
+                    playlistid: playlistToInsertTo,
+                    position: nextPlaylistPosition
+                }
+            });
+        });
     }
 
     onIpChange(ip) {
@@ -63,17 +95,26 @@ class App extends Component {
                 <div className="header-container">
                     <Header
                         onUpdateClick={this.onUpdateClick.bind(this)}
+                        onPlaylistClearClick={this.onPlaylistClearClick.bind(this)}
+                        navigateTo={this.navigateTo.bind(this)}
                     />
                 </div>
                 <div className="meat">
-                    <div className="remote-container">
-                        <Remote
-                            playbackState={this.props.playbackState}
-                            onPlayPauseClick={this.onPlayPauseClick.bind(this)}
-                            onStopClick={this.onStopClick.bind(this)}
+                    <div className="browser-container">
+                        <Browser
+                            sectionData={this.props.section.sectionData}
+                            sectionPath={this.props.section.sectionPath}
+                            onPlayArtist={this.onPlayArtist.bind(this)}
                         />
                     </div>
                     <div className="sidebar-container">
+                        <div className="remote-container">
+                            <Remote
+                                playbackState={this.props.playbackState}
+                                onPlayPauseClick={this.onPlayPauseClick.bind(this)}
+                                onStopClick={this.onStopClick.bind(this)}
+                            />
+                        </div>
                         <Sidebar
                             {...this.props}
                             />

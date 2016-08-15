@@ -25,10 +25,16 @@ body {
 .sidebar-container {
     max-width: 400px;
     min-width: 250px;
+    width: 30%;
     flex-grow: 1;
     flex-shrink: 1;
 }
 
 .remote-container {
     flex-grow: 1;
+}
+
+.browser-container {
+    flex-grow: 1;
+    flex-shrink: 5;
 }

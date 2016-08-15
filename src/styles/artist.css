@@ -1,0 +1,54 @@
+.artist {
+    height: 100%;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    transform: translateZ(0px);
+}
+
+.artist-bg {
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    position: absolute;
+    top:0;
+    bottom:0;
+    right:0;
+    left: 0;
+    z-index:-1;
+}
+
+.artist-bg--blur {
+    background-size: cover;
+    filter: blur(10px);
+    top:-10px;
+    bottom:-10px;
+    right:-10px;
+    left: -10px;
+}
+
+
+.artist-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 20px 20px 10px;
+    margin: 0;
+    background-color: rgba(255, 255, 255, 0.6);
+    background: linear-gradient(0deg, rgba(255,255,255,0.7) 10%, rgba(255,255,255,0.4) 60%, rgba(255,255,255,0) 100%);
+    display: flex;
+    line-height: 20px;
+}
+
+.artist-title {
+    flex-grow: 1;
+}
+
+.list-item-button {
+    width: 30px;
+    height: 30px;
+    background: red;
+    border: 0;
+    outline: 0;
+}

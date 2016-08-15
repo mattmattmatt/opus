@@ -51,3 +51,30 @@ export function sendKodiBatch(connection, batchArray) {
 export function getHostImage(ip, uri) {
     return uri ? 'http://' + ip + '/image/' + encodeURIComponent(uri) : '';
 }
+
+export function prepareAlbumsForNormalization(albums, ip) {
+    return albums.map((album) => {
+        album.artists = album.artist.map((artist, index) => {
+            return {
+                artist,
+                artistid: album.artistid[index]
+            };
+        });
+        delete album.artist;
+        delete album.artistid;
+        album.thumbnail = getHostImage(ip, album.thumbnail);
+        return album;
+    });
+}
+
+export function prepareArtistsForNormalization(artists, ip) {
+    return artists.map((artist) => {
+        artist.thumbnail = getHostImage(ip, artist.thumbnail);
+        artist.fanart = getHostImage(ip, artist.fanart);
+        return artist;
+    });
+}
+
+export function getFallbackImage(text, width = 600, height = 400, bgColor = '000', textColor = 'fff') {
+    return `http://dummyimage.com/${width}x${height}/${bgColor}/${textColor}.png&text=${encodeURIComponent(text)}`;
+}

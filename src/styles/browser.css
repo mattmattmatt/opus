@@ -1,0 +1,21 @@
+.browser-list {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content:flex-start;
+    align-items:stretch;;
+    align-content: stretch;
+    overflow: auto;
+    height: 100%;
+}
+
+.browser-list__item {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    /*max-width: 400px;*/
+    min-width: 250px;
+    min-height: 200px;
+    flex-grow: 1;
+}

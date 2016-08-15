@@ -11,8 +11,9 @@ class Header extends Component {
         this.props.updateUI({settingsActive: true});
     }
 
-    onUpdateClick() {
-        this.props.onUpdateClick();
+    onNavClick(event) {
+        event.preventDefault();
+        this.props.navigateTo(event.target.href);
     }
 
     render() {
@@ -20,6 +21,7 @@ class Header extends Component {
             <Toolbar>
                 <ToolbarGroup>
                     <ToolbarTitle text="Opus" />
+                    <a href="/music" onClick={this.onNavClick.bind(this)}>Music</a>
                 </ToolbarGroup>
                 <ToolbarGroup>
                     <IconMenu
@@ -35,7 +37,11 @@ class Header extends Component {
                     >
                         <MenuItem
                             primaryText="Refresh state"
-                            onClick={this.onUpdateClick.bind(this)}
+                            onClick={this.props.onUpdateClick}
+                        />
+                        <MenuItem
+                            primaryText="Clear playlist"
+                            onClick={this.props.onPlaylistClearClick}
                         />
                         <MenuItem
                             primaryText="Settings"
