@@ -6,16 +6,26 @@
     justify-content:flex-start;
     align-items:stretch;;
     align-content: stretch;
-    overflow: auto;
-    height: 100%;
 }
 
 .browser-list__item {
     margin: 0;
     padding: 0;
     list-style: none;
-    /*max-width: 400px;*/
+    flex-grow: 1;
+}
+
+.browser-list__item--album {
+    min-width: 200px;
+    min-height: 200px;
+}
+
+.browser-list__item--artist {
     min-width: 250px;
     min-height: 200px;
-    flex-grow: 1;
+}
+
+.browser-list-wrapper {
+    overflow: auto;
+    height: 100%;
 }

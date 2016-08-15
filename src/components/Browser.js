@@ -4,7 +4,9 @@ import React, {Component} from 'react';
 // import * as UI from 'material-ui';
 import ui from 'redux-ui';
 import Artist from './Artist';
+import Album from './Album';
 import _ from 'lodash/core';
+import Subheader from 'material-ui/Subheader';
 
 import '../styles/browser.css';
 
@@ -23,7 +25,7 @@ class Browser extends Component {
                 const artistData = this.props.sectionData.artists.entities.artists[artistId];
                 if (index===0) console.log(artistData);
                 return (
-                    <li key={artistData.artistid} className='browser-list__item'>
+                    <li key={artistData.artistid} className='browser-list__item browser-list__item--artist'>
                         <Artist
                             title={artistData.label}
                             thumbnail={artistData.thumbnail}
@@ -34,12 +36,49 @@ class Browser extends Component {
                     </li>
                 );
             });
+            artists = (
+                <div>
+                    <Subheader>Artists</Subheader>
+                    <ul className='browser-list'>
+                        {artists}
+                    </ul>
+                </div>
+            );
+        }
+
+        let albums;
+        if (this.props.sectionData.albums) {
+            albums = this.props.sectionData.albums.result.map((albumId, index) => {
+                const albumData = this.props.sectionData.albums.entities.albums[albumId];
+                if (index===0) console.log(albumData);
+                return (
+                    <li key={albumData.albumid} className='browser-list__item browser-list__item--album'>
+                        <Album
+                            title={albumData.label}
+                            thumbnail={albumData.thumbnail}
+                            displayartist={albumData.displayartist}
+                            fanart={albumData.fanart}
+                            albumid={albumData.albumid}
+                            onPlay={this.props.onPlayAlbum}
+                        />
+                    </li>
+                );
+            });
+            albums = (
+                <div>
+                    <Subheader>Albums</Subheader>
+                    <ul className='browser-list'>
+                        {albums}
+                    </ul>
+                </div>
+            );
         }
 
         return (
-            <ul className='browser-list'>
+            <div className="browser-list-wrapper">
+                {albums}
                 {artists}
-            </ul>
+            </div>
         );
     }
 }

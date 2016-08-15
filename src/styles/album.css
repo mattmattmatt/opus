@@ -1,4 +1,4 @@
-.artist {
+.album {
     height: 100%;
     width: 100%;
     position: relative;
@@ -6,7 +6,7 @@
     transform: translateZ(0px);
 }
 
-.artist-bg {
+.album-bg {
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -18,7 +18,7 @@
     z-index:-1;
 }
 
-.artist-bg--blur {
+.album-bg--blur {
     background-size: cover;
     filter: blur(10px);
     top:-10px;
@@ -28,7 +28,7 @@
 }
 
 
-.artist-info {
+.album-info {
     position: absolute;
     bottom: 0;
     left: 0;
@@ -41,7 +41,7 @@
     line-height: 20px;
 }
 
-.artist-title {
+.album-title {
     flex-grow: 1;
 }
 

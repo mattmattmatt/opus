@@ -54,13 +54,35 @@ class App extends Component {
     onPlayArtist(artistid) {
         let nextPlaylistPosition = this.props.hostState.playerInfo.position;
         if (typeof nextPlaylistPosition === 'undefined' || this.props.hostState.playlistItems.length === 0) {
-            nextPlaylistPosition = 0;
+            nextPlaylistPosition = -1;
         }
+        nextPlaylistPosition++;
         const playlistToInsertTo = this.props.hostState.playerInfo.playlistid || 0;
         helpers.sendKodiCommand(this.props.connection, 'Playlist.Insert', {
             playlistid: playlistToInsertTo,
             position: nextPlaylistPosition,
             item: {artistid}
+        }).then(() => {
+            helpers.sendKodiCommand(this.props.connection, 'Player.Open', {
+                item: {
+                    playlistid: playlistToInsertTo,
+                    position: nextPlaylistPosition
+                }
+            });
+        });
+    }
+
+    onPlayAlbum(albumid) {
+        let nextPlaylistPosition = this.props.hostState.playerInfo.position;
+        if (typeof nextPlaylistPosition === 'undefined' || this.props.hostState.playlistItems.length === 0) {
+            nextPlaylistPosition = -1;
+        }
+        nextPlaylistPosition++;
+        const playlistToInsertTo = this.props.hostState.playerInfo.playlistid || 0;
+        helpers.sendKodiCommand(this.props.connection, 'Playlist.Insert', {
+            playlistid: playlistToInsertTo,
+            position: nextPlaylistPosition,
+            item: {albumid}
         }).then(() => {
             helpers.sendKodiCommand(this.props.connection, 'Player.Open', {
                 item: {
@@ -105,6 +127,7 @@ class App extends Component {
                             sectionData={this.props.section.sectionData}
                             sectionPath={this.props.section.sectionPath}
                             onPlayArtist={this.onPlayArtist.bind(this)}
+                            onPlayAlbum={this.onPlayAlbum.bind(this)}
                         />
                     </div>
                     <div className="sidebar-container">
