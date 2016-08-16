@@ -81,7 +81,6 @@ export function prepareSongsForNormalization(songs, ip) {
         };
         delete song.artist;
         delete song.artistid;
-        delete song.album;
         delete song.albumid;
         song.thumbnail = getHostImage(ip, song.thumbnail);
         return song;

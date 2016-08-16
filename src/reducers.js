@@ -2,6 +2,7 @@ import { combineReducers } from 'redux';
 import * as actions from './actions';
 import moment from 'moment';
 import { reducer as uiReducer } from 'redux-ui';
+import _ from 'lodash';
 
 const defaultHostState = {
     activePlayer: null,
@@ -72,6 +73,25 @@ function section(state = defaultSectionState, action) {
     switch (action.type) {
         case actions.SET_SECTION:{
             const { sectionPath, sectionData} = action;
+            if (/\/music\/artists\/\d+/.test(sectionPath)) {
+                const data = {
+                    albums: []
+                };
+                sectionData.songs.result.forEach((songid) => {
+                    const song = sectionData.songs.entities.songs[songid];
+                    const albumIndex = _.findIndex(data.albums, (album) => {
+                        return album.albumid === song.album;
+                    });
+                    if (albumIndex > -1) {
+                        data.albums[albumIndex].songs.push(song);
+                    } else {
+                        const newAlbum = sectionData.songs.entities.albums[song.album];
+                        newAlbum.songs = [song];
+                        data.albums.push(newAlbum);
+                    }
+                });
+                sectionData.songs.data = data;
+            }
             return {
                 sectionPath,
                 sectionData

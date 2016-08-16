@@ -3,8 +3,9 @@ import React, {Component} from 'react';
 // import * as actions from '../actions';
 // import * as UI from 'material-ui';
 import ui from 'redux-ui';
-import Artist from './Artist';
-import Album from './Album';
+import Artist from './ItemArtist';
+import Album from './ItemAlbum';
+import AlbumOverview from './AlbumOverview';
 import _ from 'lodash/core';
 import Subheader from 'material-ui/Subheader';
 
@@ -75,8 +76,37 @@ class Browser extends Component {
             );
         }
 
+        let songs;
+        if (this.props.sectionData.songs) {
+            songs = this.props.sectionData.songs.data.albums.map((album, index) => {
+                if (index===0) console.log(album);
+                return (
+                    <li key={album.albumid} className='browser-list__item browser-list__item--album-overview'>
+                        <AlbumOverview
+                            title={album.album}
+                            albumid={album.albumid}
+                            items={album.songs}
+                        />
+                    </li>
+                );
+            });
+            /*thumbnail={songData.thumbnail}
+            displayartist={songData.displayartist}
+            fanart={songData.fanart}
+            onPlay={this.props.onPlayAlbum}*/
+            songs = (
+                <div>
+                    <Subheader>Albums</Subheader>
+                    <ul className='browser-list'>
+                        {songs}
+                    </ul>
+                </div>
+            );
+        }
+
         return (
             <div className="browser-list-wrapper">
+                {songs}
                 {albums}
                 {artists}
             </div>

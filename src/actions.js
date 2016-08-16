@@ -235,7 +235,7 @@ export function navigateTo(path, updateUi) {
                 helpers.sendKodiBatch(getState().connection, [
                     ['AudioLibrary.GetSongs',
                         {
-                            properties: ['title','file','thumbnail','artist','artistid','album','albumid','lastplayed','track','year','duration'],
+                            properties: ['title','disc','file','thumbnail','artist','artistid','album','albumid','lastplayed','track','year','duration'],
                             sort: { order: 'ascending', method: 'track', ignorearticle: true },
                             filter: { artistid: parseInt(path.split('/')[3], 10)}
                         }
