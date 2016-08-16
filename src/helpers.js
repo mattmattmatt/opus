@@ -53,7 +53,7 @@ export function getHostImage(ip, uri) {
 }
 
 export function prepareAlbumsForNormalization(albums, ip) {
-    return albums.map((album) => {
+    return (albums || []).map((album) => {
         album.artists = album.artist.map((artist, index) => {
             return {
                 artist,
@@ -68,7 +68,7 @@ export function prepareAlbumsForNormalization(albums, ip) {
 }
 
 export function prepareSongsForNormalization(songs, ip) {
-    return songs.map((song) => {
+    return (songs || []).map((song) => {
         song.artists = song.artist.map((artist, index) => {
             return {
                 artist,
@@ -89,7 +89,7 @@ export function prepareSongsForNormalization(songs, ip) {
 }
 
 export function prepareArtistsForNormalization(artists, ip) {
-    return artists.map((artist) => {
+    return (artists || []).map((artist) => {
         artist.thumbnail = getHostImage(ip, artist.thumbnail);
         artist.fanart = getHostImage(ip, artist.fanart);
         return artist;

@@ -231,7 +231,6 @@ export function navigateTo(path, updateUi) {
                 });
                 break;
             case (/\/music\/artists\/(\d+)$/).test(path):
-                console.log('MATCH');
                 updateUi({ activeSection: path });
                 helpers.sendKodiBatch(getState().connection, [
                     ['AudioLibrary.GetSongs',
