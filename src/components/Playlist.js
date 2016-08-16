@@ -21,11 +21,12 @@ export default class Playlist extends Component {
             return (
                 <PlaylistItem
                     key={item.id + '-' + index}
-                    item={item}
+                    primaryText={item.primaryText}
+                    secondaryText={item.secondaryText}
                     position={index}
                     onPlaylistItemPlay={this.props.onPlaylistItemPlay}
                     onPlaylistItemRemove={this.props.onPlaylistItemRemove}
-                    isPlaying={this.props.activeItemIndex === index && this.props.playbackState !== actions.PlaybackStates.STOPPED}
+                    isPlaying={this.props.isActive && this.props.activeItemIndex === index && this.props.playbackState !== actions.PlaybackStates.STOPPED}
                 />
             );
         });

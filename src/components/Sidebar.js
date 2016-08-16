@@ -4,6 +4,11 @@ import Player from './Player';
 import Playlist from './Playlist';
 import * as helpers from '../helpers';
 import * as actions from '../actions';
+import {Tabs, Tab} from 'material-ui/Tabs';
+import VideoIcon from 'material-ui/svg-icons/av/video-library';
+import AudioIcon from 'material-ui/svg-icons/av/library-music';
+
+
 
 import '../styles/sidebar.css';
 
@@ -26,7 +31,7 @@ class Sidebar extends Component {
     playlistItemPlay(position) {
         helpers.sendKodiCommand(this.props.connection, 'Player.Open', {
             item: {
-                playlistid: this.props.hostState.playerInfo.playlistid,
+                playlistid: this.props.ui.activePlaylist,
                 position
             }
         });
@@ -34,10 +39,16 @@ class Sidebar extends Component {
 
     playlistItemRemove(position) {
         helpers.sendKodiCommand(this.props.connection, 'Playlist.Remove', {
-            playlistid: this.props.hostState.playerInfo.playlistid,
+            playlistid: this.props.ui.activePlaylist,
             position
         }).then(() => {
             this.props.dispatch(actions.fetchHostState());
+        });
+    }
+
+    onChangeActivePlaylist(activePlaylist) {
+        this.props.updateUI({
+            activePlaylist
         });
     }
 
@@ -55,13 +66,31 @@ class Sidebar extends Component {
                 cover={helpers.getHostImage(this.props.settings.ip, this.props.hostState.playerInfo.thumbnail)}
             /> : <span />);
         const playlist = (
-            <Playlist
-                items={this.props.hostState.playlistItems}
-                onPlaylistItemPlay={this.playlistItemPlay.bind(this)}
-                onPlaylistItemRemove={this.playlistItemRemove.bind(this)}
-                activeItemIndex={this.props.hostState.playerInfo.position}
-                playbackState={this.props.playbackState}
-            />
+            <Tabs
+                value={this.props.ui.activePlaylist}
+                onChange={this.onChangeActivePlaylist.bind(this)}
+            >
+                <Tab icon={<AudioIcon />} value={0} >
+                    <Playlist
+                        items={this.props.hostState.playlistItemsAudio}
+                        onPlaylistItemPlay={this.playlistItemPlay.bind(this)}
+                        onPlaylistItemRemove={this.playlistItemRemove.bind(this)}
+                        activeItemIndex={this.props.hostState.playerInfo.position}
+                        playbackState={this.props.playbackState}
+                        isActive={this.props.hostState.playerInfo.playlistid === 0}
+                    />
+                </Tab>
+                <Tab icon={<VideoIcon />} value={1} >
+                    <Playlist
+                        items={this.props.hostState.playlistItemsVideo}
+                        onPlaylistItemPlay={this.playlistItemPlay.bind(this)}
+                        onPlaylistItemRemove={this.playlistItemRemove.bind(this)}
+                        activeItemIndex={this.props.hostState.playerInfo.position}
+                        playbackState={this.props.playbackState}
+                        isActive={this.props.hostState.playerInfo.playlistid === 1}
+                    />
+                </Tab>
+            </Tabs>
         );
         return (
             <section className="sidebar">
@@ -76,4 +105,6 @@ class Sidebar extends Component {
     }
 }
 
-export default ui()(Sidebar);
+export default ui({key: 'sidebar', state: {
+    activePlaylist: 0
+}})(Sidebar);

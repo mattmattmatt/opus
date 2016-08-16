@@ -16,8 +16,8 @@ export default class PlaylistItem extends Component {
         return (
             <ListItem
                 onDoubleClick={this.onPlaylistItemPlay.bind(this)}
-                primaryText={this.props.item.title}
-                secondaryText={this.props.item.artist || ''}
+                primaryText={this.props.primaryText}
+                secondaryText={this.props.secondaryText}
                 insetChildren={true}
                 rightIcon={!this.props.isPlaying ? <ActionDelete onClick={this.onPlaylistItemRemove.bind(this)} /> : <span />}
                 leftIcon={

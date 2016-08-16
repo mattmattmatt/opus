@@ -9,7 +9,8 @@ const defaultHostState = {
         lastUpdated: 0,
         timedelta: 0
     },
-    playlistItems: []
+    playlistItemsAudio: [],
+    playlistItemsVideo: []
 };
 function hostState(state = defaultHostState, action) {
     switch (action.type) {
@@ -35,7 +36,18 @@ function hostState(state = defaultHostState, action) {
         }
         case actions.SET_PLAYLIST_ITEMS: {
             const hostState = Object.assign({}, state);
-            hostState.playlistItems = action.playlistItems || [];
+            hostState.playlistItemsAudio = (action.playlistItemsAudio || []).map((item) => {
+                return {
+                    primaryText: item.title || '',
+                    secondaryText: item.artist || '',
+                };
+            });
+            hostState.playlistItemsVideo = (action.playlistItemsVideo || []).map((item) => {
+                return {
+                    primaryText: item.title || '',
+                    secondaryText: item.showtitle ?`${item.season}x${item.episode} – ${item.showtitle}` : '',
+                };
+            });
             return hostState;
         }
         default:

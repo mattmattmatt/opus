@@ -53,7 +53,7 @@ class App extends Component {
 
     onPlayArtist(artistid) {
         let nextPlaylistPosition = this.props.hostState.playerInfo.position;
-        if (typeof nextPlaylistPosition === 'undefined' || this.props.hostState.playlistItems.length === 0) {
+        if (typeof nextPlaylistPosition === 'undefined' || this.props.hostState.playlistItemsAudio.length === 0) {
             nextPlaylistPosition = -1;
         }
         nextPlaylistPosition++;
@@ -74,7 +74,7 @@ class App extends Component {
 
     onPlayAlbum(albumid) {
         let nextPlaylistPosition = this.props.hostState.playerInfo.position;
-        if (typeof nextPlaylistPosition === 'undefined' || this.props.hostState.playlistItems.length === 0) {
+        if (typeof nextPlaylistPosition === 'undefined' || this.props.hostState.playlistItemsAudio.length === 0) {
             nextPlaylistPosition = -1;
         }
         nextPlaylistPosition++;
