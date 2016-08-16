@@ -14,6 +14,11 @@ class Artist extends Component {
         this.props.onPlay(this.props.artistid);
     }
 
+    onOpenClick(event) {
+        event.preventDefault();
+        this.props.onOpen(this.props.artistid);
+    }
+
     getStyle() {
         const fallbackImgPath = helpers.getFallbackImage(this.props.title);
         return {
@@ -32,7 +37,9 @@ class Artist extends Component {
                 <div className="artist-bg artist-bg--blur" style={this.getStyle().bgBlur} />
                 <div className="artist-bg" style={this.getStyle().bg} />
                 <div className="artist-info">
-                    <p className="artist-title">{this.props.title}</p>
+                    <p className="artist-title">
+                        <a href={'/music/artists/' + this.props.artistid} onClick={this.onOpenClick.bind(this)}>{this.props.title}</a>
+                    </p>
                     <IconButton  onClick={this.onPlayClick.bind(this)} className="list-item-button list-item-button--play">
                         <AvPlay />
                     </IconButton>

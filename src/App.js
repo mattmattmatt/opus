@@ -51,6 +51,10 @@ class App extends Component {
         helpers.sendKodiCommand(this.props.connection, 'Player.Stop', {playerid: this.props.hostState.activePlayer.playerid});
     }
 
+    onOpenArtist(artistid) {
+        this.navigateTo('/music/artists/' + artistid);
+    }
+
     onPlayArtist(artistid) {
         let nextPlaylistPosition = this.props.hostState.playerInfo.position;
         if (typeof nextPlaylistPosition === 'undefined' || this.props.hostState.playlistItemsAudio.length === 0) {
@@ -128,6 +132,7 @@ class App extends Component {
                             sectionPath={this.props.section.sectionPath}
                             onPlayArtist={this.onPlayArtist.bind(this)}
                             onPlayAlbum={this.onPlayAlbum.bind(this)}
+                            onOpenArtist={this.onOpenArtist.bind(this)}
                         />
                     </div>
                     <div className="sidebar-container">

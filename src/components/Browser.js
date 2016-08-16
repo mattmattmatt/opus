@@ -32,6 +32,7 @@ class Browser extends Component {
                             fanart={artistData.fanart}
                             artistid={artistData.artistid}
                             onPlay={this.props.onPlayArtist}
+                            onOpen={this.props.onOpenArtist}
                         />
                     </li>
                 );

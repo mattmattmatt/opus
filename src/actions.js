@@ -9,9 +9,17 @@ const album = new Schema('albums', {
 const artist = new Schema('artists', {
     idAttribute: 'artistid'
 });
+const song = new Schema('songs', {
+    idAttribute: 'songid'
+});
 
 album.define({
   artists: arrayOf(artist),
+});
+
+song.define({
+  artists: arrayOf(artist),
+  album,
 });
 
 artist.define({});
@@ -51,8 +59,8 @@ function refreshConnection(ip) {
     const thunk = (dispatch) => {
         const notificationCallback = throttle(() => {
             dispatch(fetchHostState());
-            setTimeout(() => {dispatch(fetchHostState());}, 250);
-        }, 500);
+            setTimeout(() => {dispatch(fetchHostState());}, 500);
+        }, 600);
         connection = kodi(ip, 9090);
         connection.then(c => {
             console.info('Socket connected.');
@@ -170,9 +178,9 @@ export function setSection(sectionPath, sectionData) {
 
 export function navigateTo(path, updateUi) {
     return (dispatch, getState) => {
-        switch (path) {
-            case '/music':
-                updateUi({ activeSection: 'music' });
+        switch (true) {
+            case (/\/music$/).test(path):
+                updateUi({ activeSection: path });
                 helpers.sendKodiBatch(getState().connection, [
                     ['AudioLibrary.GetAlbums',
                         {
@@ -192,6 +200,50 @@ export function navigateTo(path, updateUi) {
                     albums = normalize(helpers.prepareAlbumsForNormalization(albums.albums, getState().settings.ip), arrayOf(album));
                     artists = normalize(helpers.prepareArtistsForNormalization(artists.artists, getState().settings.ip), arrayOf(artist));
                     dispatch(this.setSection(path, {albums, artists}));
+                });
+                break;
+            case (/\/music\/albums$/).test(path):
+                updateUi({ activeSection: path });
+                helpers.sendKodiBatch(getState().connection, [
+                    ['AudioLibrary.GetAlbums',
+                        {
+                            properties: ['playcount', 'artist', 'artistid', 'genre', 'rating', 'thumbnail', 'year', 'mood', 'style', 'title', 'displayartist'],
+                            sort: { order: 'ascending', method: 'random', ignorearticle: true },
+                        }
+                    ],
+                ]).then(([albums]) => {
+                    albums = normalize(helpers.prepareAlbumsForNormalization(albums.albums, getState().settings.ip), arrayOf(album));
+                    dispatch(this.setSection(path, {albums}));
+                });
+                break;
+            case (/\/music\/artists$/).test(path):
+                updateUi({ activeSection: path });
+                helpers.sendKodiBatch(getState().connection, [
+                    ['AudioLibrary.GetArtists',
+                        {
+                            properties: ['thumbnail', 'fanart', 'born', 'formed', 'died', 'disbanded', 'yearsactive', 'mood', 'style', 'genre'],
+                            sort: { order: 'ascending', method: 'random', ignorearticle: true },
+                        }
+                    ],
+                ]).then(([artists]) => {
+                    artists = normalize(helpers.prepareArtistsForNormalization(artists.artists, getState().settings.ip), arrayOf(artist));
+                    dispatch(this.setSection(path, {artists}));
+                });
+                break;
+            case (/\/music\/artists\/(\d+)$/).test(path):
+                console.log('MATCH');
+                updateUi({ activeSection: path });
+                helpers.sendKodiBatch(getState().connection, [
+                    ['AudioLibrary.GetSongs',
+                        {
+                            properties: ['title','file','thumbnail','artist','artistid','album','albumid','lastplayed','track','year','duration'],
+                            sort: { order: 'ascending', method: 'track', ignorearticle: true },
+                            filter: { artistid: parseInt(path.split('/')[3], 10)}
+                        }
+                    ],
+                ]).then(([songs]) => {
+                    songs = normalize(helpers.prepareSongsForNormalization(songs.songs, getState().settings.ip), arrayOf(song));
+                    dispatch(this.setSection(path, {songs}));
                 });
                 break;
             default:

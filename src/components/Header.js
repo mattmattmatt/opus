@@ -22,6 +22,8 @@ class Header extends Component {
                 <ToolbarGroup>
                     <ToolbarTitle text="Opus" />
                     <a href="/music" onClick={this.onNavClick.bind(this)}>Music</a>
+                    <a href="/music/albums" onClick={this.onNavClick.bind(this)}>Albums</a>
+                    <a href="/music/artists" onClick={this.onNavClick.bind(this)}>Artists</a>
                 </ToolbarGroup>
                 <ToolbarGroup>
                     <IconMenu

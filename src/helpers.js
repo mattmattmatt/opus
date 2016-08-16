@@ -67,6 +67,27 @@ export function prepareAlbumsForNormalization(albums, ip) {
     });
 }
 
+export function prepareSongsForNormalization(songs, ip) {
+    return songs.map((song) => {
+        song.artists = song.artist.map((artist, index) => {
+            return {
+                artist,
+                artistid: song.artistid[index]
+            };
+        });
+        song.album = {
+            album: song.album,
+            albumid: song.albumid
+        };
+        delete song.artist;
+        delete song.artistid;
+        delete song.album;
+        delete song.albumid;
+        song.thumbnail = getHostImage(ip, song.thumbnail);
+        return song;
+    });
+}
+
 export function prepareArtistsForNormalization(artists, ip) {
     return artists.map((artist) => {
         artist.thumbnail = getHostImage(ip, artist.thumbnail);
