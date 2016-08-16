@@ -177,14 +177,14 @@ export function navigateTo(path, updateUi) {
                     ['AudioLibrary.GetAlbums',
                         {
                             properties: ['playcount', 'artist', 'artistid', 'genre', 'rating', 'thumbnail', 'year', 'mood', 'style', 'title', 'displayartist'],
-                            sort: { order: 'ascending', method: 'none', ignorearticle: true },
+                            sort: { order: 'ascending', method: 'random', ignorearticle: true },
                             limits: { start: 0, end: 10 }
                         }
                     ],
                     ['AudioLibrary.GetArtists',
                         {
                             properties: ['thumbnail', 'fanart', 'born', 'formed', 'died', 'disbanded', 'yearsactive', 'mood', 'style', 'genre'],
-                            sort: { order: 'ascending', method: 'none', ignorearticle: true },
+                            sort: { order: 'ascending', method: 'random', ignorearticle: true },
                             limits: { start: 0, end: 10 }
                         }
                     ],

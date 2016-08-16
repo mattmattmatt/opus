@@ -20,9 +20,19 @@
     min-height: 200px;
 }
 
+.browser-list__item--album:first-child {
+    min-width: 400px;
+    min-height: 300px;
+}
+
 .browser-list__item--artist {
     min-width: 250px;
     min-height: 200px;
+}
+
+.browser-list__item--artist:first-child {
+    min-width: 500px;
+    min-height: 400px;
 }
 
 .browser-list-wrapper {
