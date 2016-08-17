@@ -87,10 +87,25 @@ function section(state = defaultSectionState, action) {
                     } else {
                         const newAlbum = sectionData.songs.entities.albums[song.album];
                         newAlbum.songs = [song];
+                        newAlbum.displayartist = song.displayartist;
                         data.albums.push(newAlbum);
                     }
                 });
                 sectionData.songs.data = data;
+            }
+            if (/\/music\/albums\/\d+/.test(sectionPath)) {
+                let newAlbum = {
+                    songs: []
+                };
+                sectionData.songs.result.forEach((songid) => {
+                    const song = sectionData.songs.entities.songs[songid];
+                    newAlbum = Object.assign({}, newAlbum, sectionData.songs.entities.albums[song.album]);
+                    newAlbum.songs.push(song);
+                    newAlbum.displayartist = song.displayartist;
+                    newAlbum.artistid = song.artists[0];
+                });
+                sectionData.album = newAlbum;
+                delete sectionData.songs;
             }
             return {
                 sectionPath,

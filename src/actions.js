@@ -235,9 +235,24 @@ export function navigateTo(path, updateUi) {
                 helpers.sendKodiBatch(getState().connection, [
                     ['AudioLibrary.GetSongs',
                         {
-                            properties: ['title','disc','file','thumbnail','artist','artistid','album','albumid','lastplayed','track','year','duration'],
+                            properties: ['title','disc','file','thumbnail','artist','artistid','displayartist',/*'albumartist', 'albumartistid',*/'album','albumid','lastplayed','track','year','duration'],
                             sort: { order: 'ascending', method: 'track', ignorearticle: true },
                             filter: { artistid: parseInt(path.split('/')[3], 10)}
+                        }
+                    ],
+                ]).then(([songs]) => {
+                    songs = normalize(helpers.prepareSongsForNormalization(songs.songs, getState().settings.ip), arrayOf(song));
+                    dispatch(this.setSection(path, {songs}));
+                });
+                break;
+            case (/\/music\/albums\/(\d+)$/).test(path):
+                updateUi({ activeSection: path });
+                helpers.sendKodiBatch(getState().connection, [
+                    ['AudioLibrary.GetSongs',
+                        {
+                            properties: ['title','disc','file','thumbnail','artist','artistid','displayartist',/*'albumartist', 'albumartistid',*/'album','albumid','lastplayed','track','year','duration'],
+                            sort: { order: 'ascending', method: 'track', ignorearticle: true },
+                            filter: { albumid: parseInt(path.split('/')[3], 10)}
                         }
                     ],
                 ]).then(([songs]) => {

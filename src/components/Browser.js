@@ -6,6 +6,7 @@ import ui from 'redux-ui';
 import Artist from './ItemArtist';
 import Album from './ItemAlbum';
 import AlbumOverview from './AlbumOverview';
+import AlbumDetail from './AlbumDetail';
 import _ from 'lodash/core';
 import Subheader from 'material-ui/Subheader';
 
@@ -88,6 +89,7 @@ class Browser extends Component {
                         <AlbumOverview
                             title={album.album}
                             albumid={album.albumid}
+                            displayartist={album.displayartist}
                             items={album.songs}
                             onPlay={this.props.onPlayAlbum}
                             onOpenAlbum={this.props.onOpenAlbum}
@@ -96,10 +98,6 @@ class Browser extends Component {
                     </li>
                 );
             });
-            /*thumbnail={songData.thumbnail}
-            displayartist={songData.displayartist}
-            fanart={songData.fanart}
-            onPlay={this.props.onPlayAlbum}*/
             songs = (
                 <div>
                     <Subheader>Albums</Subheader>
@@ -110,9 +108,26 @@ class Browser extends Component {
             );
         }
 
+        let oneAlbum;
+        if (this.props.sectionData.album) {
+            const album = this.props.sectionData.album;
+            oneAlbum = (
+                <AlbumDetail
+                    title={album.album}
+                    albumid={album.albumid}
+                    artistid={album.artistid}
+                    displayartist={album.displayartist}
+                    items={album.songs}
+                    onPlay={this.props.onPlayAlbum}
+                    onOpenArtist={this.props.onOpenArtist}
+                />
+            );
+        }
+
         return (
             <div className="browser-list-wrapper">
                 {songs}
+                {oneAlbum}
                 {albums}
                 {artists}
             </div>
