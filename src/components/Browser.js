@@ -86,6 +86,7 @@ class Browser extends Component {
                             title={album.album}
                             albumid={album.albumid}
                             items={album.songs}
+                            onPlay={this.props.onPlayAlbum}
                         />
                     </li>
                 );
