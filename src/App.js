@@ -55,6 +55,10 @@ class App extends Component {
         this.navigateTo('/music/artists/' + artistid);
     }
 
+    onOpenAlbum(albumid) {
+        this.navigateTo('/music/albums/' + albumid);
+    }
+
     onPlayArtist(artistid) {
         let nextPlaylistPosition = this.props.hostState.playerInfo.position;
         if (typeof nextPlaylistPosition === 'undefined' || this.props.hostState.playlistItemsAudio.length === 0) {
@@ -102,7 +106,8 @@ class App extends Component {
     }
 
     componentWillMount() {
-        this.onIpChange('192.168.1.140');
+        // this.onIpChange('192.168.1.140');
+        this.onIpChange('172.19.248.43');
     }
 
     componentDidMount() {
@@ -133,6 +138,7 @@ class App extends Component {
                             onPlayArtist={this.onPlayArtist.bind(this)}
                             onPlayAlbum={this.onPlayAlbum.bind(this)}
                             onOpenArtist={this.onOpenArtist.bind(this)}
+                            onOpenAlbum={this.onOpenAlbum.bind(this)}
                         />
                     </div>
                     <div className="sidebar-container">

@@ -59,9 +59,12 @@ class Browser extends Component {
                             title={albumData.label}
                             thumbnail={albumData.thumbnail}
                             displayartist={albumData.displayartist}
+                            artistid={albumData.artists[0]}
                             fanart={albumData.fanart}
                             albumid={albumData.albumid}
                             onPlay={this.props.onPlayAlbum}
+                            onOpenAlbum={this.props.onOpenAlbum}
+                            onOpenArtist={this.props.onOpenArtist}
                         />
                     </li>
                 );
@@ -87,6 +90,8 @@ class Browser extends Component {
                             albumid={album.albumid}
                             items={album.songs}
                             onPlay={this.props.onPlayAlbum}
+                            onOpenAlbum={this.props.onOpenAlbum}
+                            onOpenArtist={this.props.onOpenArtist}
                         />
                     </li>
                 );

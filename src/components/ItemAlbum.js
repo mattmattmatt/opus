@@ -14,6 +14,16 @@ class Album extends Component {
         this.props.onPlay(this.props.albumid);
     }
 
+    onOpenArtistClick(event) {
+        event.preventDefault();
+        this.props.onOpenArtist(this.props.artistid);
+    }
+
+    onOpenAlbumClick(event) {
+        event.preventDefault();
+        this.props.onOpenAlbum(this.props.albumid);
+    }
+
     getStyle() {
         const fallbackImgPath = helpers.getFallbackImage(this.props.title + '\n' + this.props.displayalbum);
         return {
@@ -33,9 +43,9 @@ class Album extends Component {
                 <div className="album-bg" style={this.getStyle().bg} />
                 <div className="album-info">
                     <p className="album-title">
-                        {this.props.title}<br />
-                        {this.props.displayartist}
-                        </p>
+                        <a href={'/music/albums/' + this.props.albumid} onClick={this.onOpenAlbumClick.bind(this)}>{this.props.title}</a><br />
+                        <a href={'/music/artists/' + this.props.artistid} onClick={this.onOpenArtistClick.bind(this)}>{this.props.displayartist}</a>
+                    </p>
                     <IconButton  onClick={this.onPlayClick.bind(this)} className="list-item-button list-item-button--play">
                         <AvPlay />
                     </IconButton>
