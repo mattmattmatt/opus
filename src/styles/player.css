@@ -80,6 +80,19 @@
     padding-left: 0;
 }
 
+.seeker__time--seek-time {
+    position: absolute;
+    top: -40px;
+    z-index: 1;
+    background-color: white;
+    padding: 5px 10px !important;
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    display: block;
+    text-align: center;
+    margin-left: -20px;
+}
+
 .seeker__position {
     position: absolute;
     top: -6px;

@@ -15,16 +15,21 @@ export default class Player extends Component {
             seekPos: undefined
         };
         this.debouncedDrag = throttle((event, position) => {
-            let newPercentage = (position.x / this.refs.seeker.clientWidth);
-            newPercentage = Math.round(Math.max(Math.min(newPercentage, 1), 0) * 100);
+            const newPercentage = this.getPercentageForPosition(position);
             this.setState({
                 seekPos: newPercentage / 100
             });
-            this.props.onSeek(newPercentage);
-        }, 500);
+        }, 50);
     }
+
     shouldComponentUpdate() {
         return true;
+    }
+
+    getPercentageForPosition(position) {
+        let newPercentage = (position.x / this.refs.seeker.clientWidth);
+        newPercentage = Math.round(Math.max(Math.min(newPercentage, 1), 0) * 100);
+        return newPercentage;
     }
 
     handleDragStart() {
@@ -32,7 +37,11 @@ export default class Player extends Component {
     }
 
     handleDragStop(event, position) {
-        this.debouncedDrag(event, position);
+        const newPercentage = this.getPercentageForPosition(position);
+        this.setState({
+            seekPos: newPercentage / 100
+        });
+        this.props.onSeek(newPercentage);
         // only block seek position for another 1000ms
         setTimeout(() => {
             this.setState({
@@ -79,19 +88,29 @@ export default class Player extends Component {
             x: 0,
             y: 0
         };
+        const totalTime = moment.duration(this.props.duration, 'seconds');
+        const currentTime = moment.duration(this.props.position, 'seconds');
+        let seekTime;
         if (this.refs.seeker && this.refs.seeker.clientWidth) {
             if (this.state.seekPos) {
                 pos.x = this.state.seekPos * this.refs.seeker.clientWidth;
+                seekTime = moment.duration(this.props.duration * this.state.seekPos, 'seconds');
             } else {
                 pos.x = this.props.position / this.props.duration * this.refs.seeker.clientWidth;
             }
         }
-        const currentTime = moment.duration(this.props.position, 'seconds');
-        const totalTime = moment.duration(this.props.duration, 'seconds');
         let timeFormat = 'h:mm:ss';
         if (totalTime.hours() < 1) {
             timeFormat = 'm:ss';
         }
+        const seekTimeComp = seekTime ? (
+            <span
+                className="seeker__time seeker__time--seek-time"
+                style={{left: pos.x + 'px'}}
+            >
+                {seekTime.format(timeFormat, { trim: false })}
+            </span>
+        ) : null;
         return (
             <div className="player">
                 <div className="player__bg player__bg--blur" style={this.getStyle().cover} />
@@ -108,12 +127,13 @@ export default class Player extends Component {
                             {currentTime.format(timeFormat, { trim: false })}
                         </span>
                         <div className="seeker" ref="seeker">
+                            {seekTimeComp}
                             <Draggable
                                 // bounds="parent"
                                 axis="x"
                                 position={pos}
                                 onStart={this.handleDragStart.bind(this)}
-                                onDrag={undefined/*this.debouncedDrag*/}
+                                onDrag={this.debouncedDrag.bind(this)}
                                 onStop={this.handleDragStop.bind(this)}
                                 zindex={100}
                                 >
