@@ -20,7 +20,11 @@ function hostState(state = defaultHostState, action) {
         }
         case actions.SET_PLAYER_INFO: {
             let hostState = Object.assign({}, state);
-            if (action.data) {
+            if (action.data.appProperties) {
+                hostState.volume = action.data.appProperties.volume;
+                hostState.muted = action.data.appProperties.muted;
+                hostState.name = action.data.appProperties.name;
+            } else if (action.data) {
                 const [playerProps, playerItem] = action.data;
                 hostState.playerInfo = Object.assign({}, playerProps, playerItem.item, { lastUpdated: new Date().getTime() });
                 hostState.playerInfo.time = moment.duration(hostState.playerInfo.time).asSeconds();

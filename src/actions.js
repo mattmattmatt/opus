@@ -110,11 +110,12 @@ export function fetchHostState() {
     return (dispatch, getState) => {
         const commandBatch = [
             ['Player.GetActivePlayers'],
+            ['Application.GetProperties', {'properties': ['volume', 'muted', 'name']}],
             ['XBMC.GetInfoBooleans', { 'booleans': ['Player.Paused', 'Player.Playing'] }],
             ['Playlist.GetItems', { 'properties': ['title', 'album', 'artist', 'duration'], 'playlistid': 0 }],
             ['Playlist.GetItems', { 'properties': ['title', 'season', 'episode', 'showtitle', 'originaltitle', 'duration', 'description'], 'playlistid': 1 }]
         ];
-        return helpers.sendKodiBatch(getState().connection, commandBatch).then(([activePlayers, infoBools, audioPlaylistItems, videoPlaylistItems]) => {
+        return helpers.sendKodiBatch(getState().connection, commandBatch).then(([activePlayers, appProperties, infoBools, audioPlaylistItems, videoPlaylistItems]) => {
             let playbackState;
 
             if ((!infoBools['Player.Paused'] && !infoBools['Player.Playing']) || !activePlayers.length) {
@@ -128,6 +129,7 @@ export function fetchHostState() {
             }
             dispatch(setPlaybackState(playbackState));
             dispatch(setActivePlayer(activePlayers[0]));
+            dispatch(setPlayerInfo({appProperties}));
             dispatch(setPlaylistItems(audioPlaylistItems.items, videoPlaylistItems.items));
         }, kodiErrorHandler).then(() => {
             if (getState().hostState.activePlayer) {
