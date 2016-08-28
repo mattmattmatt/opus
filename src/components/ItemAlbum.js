@@ -40,7 +40,7 @@ class Album extends Component {
         return (
             <div className="album" >
                 <div className="album-bg album-bg--blur" style={this.getStyle().bgBlur} />
-                <div className="album-bg" style={this.getStyle().bg} />
+                <div className="album-bg" style={this.getStyle().bg} onClick={this.onOpenAlbumClick.bind(this)} />
                 <div className="album-info">
                     <p className="album-title">
                         <a href={'/music/albums/' + this.props.albumid} onClick={this.onOpenAlbumClick.bind(this)}>{this.props.title}</a><br />

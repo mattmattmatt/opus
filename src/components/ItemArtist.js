@@ -35,7 +35,7 @@ class Artist extends Component {
         return (
             <div className="artist" >
                 <div className="artist-bg artist-bg--blur" style={this.getStyle().bgBlur} />
-                <div className="artist-bg" style={this.getStyle().bg} />
+                <div className="artist-bg" style={this.getStyle().bg} onClick={this.onOpenClick.bind(this)} />
                 <div className="artist-info">
                     <p className="artist-title">
                         <a href={'/music/artists/' + this.props.artistid} onClick={this.onOpenClick.bind(this)}>{this.props.title}</a>
