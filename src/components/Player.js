@@ -4,9 +4,9 @@ import '../styles/player.css';
 // import * as actions from '../actions';
 import moment from 'moment';
 import 'moment-duration-format';
-import Draggable from 'react-draggable';
 import throttle from 'lodash.throttle';
 import * as actions from '../actions';
+import Slider from 'material-ui/Slider';
 
 export default class Player extends Component {
     constructor(props) {
@@ -15,9 +15,8 @@ export default class Player extends Component {
             seekPos: undefined
         };
         this.debouncedDrag = throttle((event, position) => {
-            const newPercentage = this.getPercentageForPosition(position);
             this.setState({
-                seekPos: newPercentage / 100
+                seekPos: position
             });
         }, 50);
     }
@@ -26,22 +25,12 @@ export default class Player extends Component {
         return true;
     }
 
-    getPercentageForPosition(position) {
-        let newPercentage = (position.x / this.refs.seeker.clientWidth);
-        newPercentage = Math.round(Math.max(Math.min(newPercentage, 1), 0) * 100);
-        return newPercentage;
-    }
-
     handleDragStart() {
         this.stopTimeTimer();
     }
 
-    handleDragStop(event, position) {
-        const newPercentage = this.getPercentageForPosition(position);
-        this.setState({
-            seekPos: newPercentage / 100
-        });
-        this.props.onSeek(newPercentage);
+    handleDragStop() {
+        this.props.onSeek(Math.round(this.state.seekPos / this.props.duration * 100));
         // only block seek position for another 1000ms
         setTimeout(() => {
             this.setState({
@@ -84,20 +73,15 @@ export default class Player extends Component {
     }
 
     render() {
-        let pos = {
-            x: 0,
-            y: 0
-        };
+        let pos = 0;
         const totalTime = moment.duration(this.props.duration, 'seconds');
         const currentTime = moment.duration(this.props.position, 'seconds');
         let seekTime;
-        if (this.refs.seeker && this.refs.seeker.clientWidth) {
-            if (this.state.seekPos) {
-                pos.x = this.state.seekPos * this.refs.seeker.clientWidth;
-                seekTime = moment.duration(this.props.duration * this.state.seekPos, 'seconds');
-            } else {
-                pos.x = this.props.position / this.props.duration * this.refs.seeker.clientWidth;
-            }
+        if (this.state.seekPos) {
+            seekTime = moment.duration(this.state.seekPos, 'seconds');
+            pos = this.state.seekPos;
+        } else {
+            pos = this.props.position;
         }
         let timeFormat = 'h:mm:ss';
         if (totalTime.hours() < 1) {
@@ -106,7 +90,7 @@ export default class Player extends Component {
         const seekTimeComp = seekTime ? (
             <span
                 className="seeker__time seeker__time--seek-time"
-                style={{left: pos.x + 'px'}}
+                style={{left: (pos / this.props.duration * 100) + '%'}}
             >
                 {seekTime.format(timeFormat, { trim: false })}
             </span>
@@ -128,17 +112,17 @@ export default class Player extends Component {
                         </span>
                         <div className="seeker" ref="seeker">
                             {seekTimeComp}
-                            <Draggable
-                                // bounds="parent"
+                            <Slider
                                 axis="x"
-                                position={pos}
-                                onStart={this.handleDragStart.bind(this)}
-                                onDrag={this.debouncedDrag.bind(this)}
-                                onStop={this.handleDragStop.bind(this)}
-                                zindex={100}
-                                >
-                                <div className="seeker__position" />
-                            </Draggable>
+                                min={0}
+                                max={this.props.duration}
+                                step={1}
+                                value={pos}
+                                onChange={this.debouncedDrag.bind(this)}
+                                onDragStart={this.handleDragStart.bind(this)}
+                                onDragStop={this.handleDragStop.bind(this)}
+                                sliderStyle={{margin: 0}}
+                            />
                         </div>
                         <span className="seeker__time seeker__time--total-time">
                             {totalTime.format(timeFormat, { trim: false })}
