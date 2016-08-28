@@ -51,6 +51,32 @@ class App extends Component {
         helpers.sendKodiCommand(this.props.connection, 'Player.Stop', {playerid: this.props.hostState.activePlayer.playerid});
     }
 
+    onNextClick() {
+        if (!this.props.hostState.activePlayer) {
+            return;
+        }
+        helpers.sendKodiCommand(this.props.connection, 'Player.GoTo', {playerid: this.props.hostState.activePlayer.playerid, to: 'next'});
+    }
+
+    onPreviousClick() {
+        if (!this.props.hostState.activePlayer) {
+            return;
+        }
+        helpers.sendKodiCommand(this.props.connection, 'Player.GoTo', {playerid: this.props.hostState.activePlayer.playerid, to: 'previous'});
+    }
+
+    onVolumeIncrease() {
+        helpers.sendKodiCommand(this.props.connection, 'Input.ExecuteAction', {action: 'volumeup'});
+    }
+
+    onVolumeDecrease() {
+        helpers.sendKodiCommand(this.props.connection, 'Input.ExecuteAction', {action: 'volumedown'});
+    }
+
+    onVolumeSet(volume) {
+        helpers.sendKodiCommand(this.props.connection, 'Application.SetVolume', {volume});
+    }
+
     onOpenArtist(artistid) {
         this.navigateTo('/music/artists/' + artistid);
     }
@@ -107,7 +133,8 @@ class App extends Component {
 
     componentWillMount() {
         // this.onIpChange('192.168.1.140');
-        this.onIpChange('172.19.248.43');
+        this.onIpChange('192.168.1.10');
+        // this.onIpChange('172.19.248.43');
     }
 
     componentDidMount() {
@@ -147,6 +174,11 @@ class App extends Component {
                                 playbackState={this.props.playbackState}
                                 onPlayPauseClick={this.onPlayPauseClick.bind(this)}
                                 onStopClick={this.onStopClick.bind(this)}
+                                onNextClick={this.onNextClick.bind(this)}
+                                onPreviousClick={this.onPreviousClick.bind(this)}
+                                onVolumeIncrease={this.onVolumeIncrease.bind(this)}
+                                onVolumeDecrease={this.onVolumeDecrease.bind(this)}
+                                onVolumeSet={this.onVolumeSet.bind(this)}
                             />
                         </div>
                         <Sidebar
