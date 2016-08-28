@@ -179,6 +179,8 @@ class App extends Component {
                                 onVolumeIncrease={this.onVolumeIncrease.bind(this)}
                                 onVolumeDecrease={this.onVolumeDecrease.bind(this)}
                                 onVolumeSet={this.onVolumeSet.bind(this)}
+                                volume={this.props.hostState.volume}
+                                muted={this.props.hostState.muted}
                             />
                         </div>
                         <Sidebar

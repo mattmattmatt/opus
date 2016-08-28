@@ -80,6 +80,7 @@ function refreshConnection(ip) {
             c.notification('AudioLibrary.OnRemove', notificationCallback);
             c.notification('AudioLibrary.OnScanFinished', notificationCallback);
             c.notification('AudioLibrary.OnCleanFinished', notificationCallback);
+            c.notification('Application.OnVolumeChanged', notificationCallback);
             c.notification('System.OnWake', notificationCallback);
             c.on('error', (e) => {
                 console.warn('Socket error, attemting reconnect.', e);

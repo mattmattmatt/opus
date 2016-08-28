@@ -11,7 +11,9 @@ const defaultHostState = {
         timedelta: 0
     },
     playlistItemsAudio: [],
-    playlistItemsVideo: []
+    playlistItemsVideo: [],
+    volume: 0,
+    muted: false
 };
 function hostState(state = defaultHostState, action) {
     switch (action.type) {
@@ -20,15 +22,17 @@ function hostState(state = defaultHostState, action) {
         }
         case actions.SET_PLAYER_INFO: {
             let hostState = Object.assign({}, state);
-            if (action.data.appProperties) {
-                hostState.volume = action.data.appProperties.volume;
-                hostState.muted = action.data.appProperties.muted;
-                hostState.name = action.data.appProperties.name;
-            } else if (action.data) {
-                const [playerProps, playerItem] = action.data;
-                hostState.playerInfo = Object.assign({}, playerProps, playerItem.item, { lastUpdated: new Date().getTime() });
-                hostState.playerInfo.time = moment.duration(hostState.playerInfo.time).asSeconds();
-                hostState.playerInfo.totaltime = moment.duration(hostState.playerInfo.totaltime).asSeconds();
+            if (action.data) {
+                if (action.data.appProperties) {
+                    hostState.volume = action.data.appProperties.volume;
+                    hostState.muted = action.data.appProperties.muted;
+                    hostState.name = action.data.appProperties.name;
+                } else {
+                    const [playerProps, playerItem] = action.data;
+                    hostState.playerInfo = Object.assign({}, playerProps, playerItem.item, { lastUpdated: new Date().getTime() });
+                    hostState.playerInfo.time = moment.duration(hostState.playerInfo.time).asSeconds();
+                    hostState.playerInfo.totaltime = moment.duration(hostState.playerInfo.totaltime).asSeconds();
+                }
             } else {
                 hostState.playerInfo = defaultHostState.playerInfo;
             }

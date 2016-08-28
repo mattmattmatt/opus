@@ -2,11 +2,19 @@ import React, {Component} from 'react';
 
 import * as actions from '../actions';
 import * as UI from 'material-ui';
-
+import throttle from 'lodash.throttle';
 export default class Remote extends Component {
-    shouldComponentUpdate(nextProps) {
-        return this.props.playbackState !== nextProps.playbackState;
+    constructor(props) {
+        super(props);
+        this.debouncedDrag = throttle((event, volume) => {
+            this.props.onVolumeSet(Math.round(volume));
+        }, 200);
     }
+
+    shouldComponentUpdate(nextProps) {
+        return true || this.props.playbackState !== nextProps.playbackState;
+    }
+
     render() {
         let stopButton;
         let nextButton;
@@ -42,7 +50,7 @@ export default class Remote extends Component {
                 />
 
                 {stopButton}
-                
+
                 {nextButton}
 
                 <UI.RaisedButton
@@ -53,6 +61,16 @@ export default class Remote extends Component {
                     onClick={this.props.onVolumeDecrease}
                     label="Less louder"
                 />
+
+            <UI.Slider
+                style={{height: 100}}
+                axis="y"
+                min={0}
+                max={100}
+                step={1}
+                value={this.props.volume}
+                onChange={this.debouncedDrag.bind(this)}
+            />
             </div>
         );
     }
