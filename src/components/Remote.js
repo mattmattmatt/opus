@@ -2,13 +2,13 @@ import React, {Component} from 'react';
 
 import * as actions from '../actions';
 import * as UI from 'material-ui';
-import throttle from 'lodash.throttle';
+import debounce from 'lodash.debounce';
 export default class Remote extends Component {
     constructor(props) {
         super(props);
-        this.debouncedDrag = throttle((event, volume) => {
+        this.debouncedDrag = debounce((event, volume) => {
             this.props.onVolumeSet(Math.round(volume));
-        }, 200);
+        }, 600);
     }
 
     shouldComponentUpdate(nextProps) {
