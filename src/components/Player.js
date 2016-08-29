@@ -6,6 +6,7 @@ import moment from 'moment';
 import 'moment-duration-format';
 import throttle from 'lodash.throttle';
 import * as actions from '../actions';
+import _ from 'lodash/core';
 import Slider from 'material-ui/Slider';
 
 export default class Player extends Component {
@@ -21,8 +22,19 @@ export default class Player extends Component {
         }, 50);
     }
 
-    shouldComponentUpdate() {
-        return true;
+    shouldComponentUpdate(nextProps, nextState) {
+        const propPicks = [
+            'playbackState',
+            'cover',
+            'duration',
+            'position',
+            'title',
+            'artist',
+            'album'
+        ];
+        const newProps = _.pick(nextProps, propPicks);
+        const oldProps = _.pick(this.props, propPicks);
+       return !_.isEqual(newProps, oldProps) || this.state.seekPos !== nextState.seekPos;
     }
 
     handleDragStart() {

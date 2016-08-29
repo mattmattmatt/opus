@@ -15,7 +15,7 @@ export default class Remote extends Component {
     }
 
     shouldComponentUpdate(nextProps) {
-        return true || this.props.playbackState !== nextProps.playbackState;
+        return this.props.playbackState !== nextProps.playbackState || this.props.volume !== nextProps.volume;
     }
 
     render() {
