@@ -9,6 +9,9 @@ export default class Remote extends Component {
         this.debouncedDrag = debounce((event, volume) => {
             this.props.onVolumeSet(Math.round(volume));
         }, 600);
+        this.onDragStop = () => {
+            this.props.onVolumeSet(Math.round(this.slider.state.value));
+        };
     }
 
     shouldComponentUpdate(nextProps) {
@@ -70,6 +73,8 @@ export default class Remote extends Component {
                 step={1}
                 value={this.props.volume}
                 onChange={this.debouncedDrag.bind(this)}
+                onDragStop={this.onDragStop.bind(this)}
+                ref={(node) => { this.slider = node; }}
             />
             </div>
         );

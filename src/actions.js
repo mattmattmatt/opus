@@ -55,39 +55,53 @@ function kodiErrorHandler(error) {
     console.warn(error);
 }
 
+function generalNotificationCallback(dispatch) {
+    return throttle(() => {
+        dispatch(fetchHostState());
+        setTimeout(() => {dispatch(fetchHostState());}, 500);
+    }, 600);
+}
+
+function volumeNotificationCallback(dispatch) {
+    return (notification) => {
+        dispatch(setPlayerInfo({
+            appProperties: {
+                volume: notification.data.volume,
+                muted: notification.data.muted,
+            }
+        }));
+    };
+}
+
 function refreshConnection(ip) {
     const thunk = (dispatch) => {
-        const notificationCallback = throttle(() => {
-            dispatch(fetchHostState());
-            setTimeout(() => {dispatch(fetchHostState());}, 500);
-        }, 600);
         connection = kodi(ip, 9090);
         connection.then(c => {
             console.info('Socket connected.');
-            c.notification('Player.OnPause', notificationCallback);
-            c.notification('Player.OnPlay', notificationCallback);
-            c.notification('Player.OnStop', notificationCallback);
-            c.notification('Player.OnSeek', notificationCallback);
-            c.notification('Player.OnPropertyChanged', notificationCallback);
-            c.notification('Playlist.OnAdd', notificationCallback);
-            c.notification('Playlist.OnRemove', notificationCallback);
-            c.notification('Playlist.OnClear', notificationCallback);
-            c.notification('VideoLibrary.OnUpdate', notificationCallback);
-            c.notification('VideoLibrary.OnRemove', notificationCallback);
-            c.notification('VideoLibrary.OnScanFinished', notificationCallback);
-            c.notification('VideoLibrary.OnCleanFinished', notificationCallback);
-            c.notification('AudioLibrary.OnUpdate', notificationCallback);
-            c.notification('AudioLibrary.OnRemove', notificationCallback);
-            c.notification('AudioLibrary.OnScanFinished', notificationCallback);
-            c.notification('AudioLibrary.OnCleanFinished', notificationCallback);
-            c.notification('Application.OnVolumeChanged', notificationCallback);
-            c.notification('System.OnWake', notificationCallback);
+            c.notification('Player.OnPause', generalNotificationCallback(dispatch));
+            c.notification('Player.OnPlay', generalNotificationCallback(dispatch));
+            c.notification('Player.OnStop', generalNotificationCallback(dispatch));
+            c.notification('Player.OnSeek', generalNotificationCallback(dispatch));
+            c.notification('Player.OnPropertyChanged', generalNotificationCallback(dispatch));
+            c.notification('Playlist.OnAdd', generalNotificationCallback(dispatch));
+            c.notification('Playlist.OnRemove', generalNotificationCallback(dispatch));
+            c.notification('Playlist.OnClear', generalNotificationCallback(dispatch));
+            c.notification('VideoLibrary.OnUpdate', generalNotificationCallback(dispatch));
+            c.notification('VideoLibrary.OnRemove', generalNotificationCallback(dispatch));
+            c.notification('VideoLibrary.OnScanFinished', generalNotificationCallback(dispatch));
+            c.notification('VideoLibrary.OnCleanFinished', generalNotificationCallback(dispatch));
+            c.notification('AudioLibrary.OnUpdate', generalNotificationCallback(dispatch));
+            c.notification('AudioLibrary.OnRemove', generalNotificationCallback(dispatch));
+            c.notification('AudioLibrary.OnScanFinished', generalNotificationCallback(dispatch));
+            c.notification('AudioLibrary.OnCleanFinished', generalNotificationCallback(dispatch));
+            c.notification('Application.OnVolumeChanged', volumeNotificationCallback(dispatch));
+            c.notification('System.OnWake', generalNotificationCallback(dispatch));
             c.on('error', (e) => {
-                console.warn('Socket error, attemting reconnect.', e);
+                console.warn('Socket error, attempting reconnect.', e);
                 dispatch(refreshConnection(ip));
             });
             c.on('close', () => {
-                console.warn('Socket closed, attemting reconnect.');
+                console.warn('Socket closed, attempting reconnect.');
                 dispatch(refreshConnection(ip));
             });
             dispatch(setConnection(c));
@@ -164,7 +178,7 @@ export function updateCurrentTime() {
     return { type: UPDATE_CURRENT_IIME };
 }
 
-function setPlayerInfo(data) {
+export function setPlayerInfo(data) {
     return { type: SET_PLAYER_INFO, data };
 }
 

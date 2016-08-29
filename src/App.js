@@ -75,6 +75,11 @@ class App extends Component {
 
     onVolumeSet(volume) {
         helpers.sendKodiCommand(this.props.connection, 'Application.SetVolume', {volume});
+        this.props.dispatch(actions.setPlayerInfo({
+            appProperties: {
+                volume
+            }
+        }));
     }
 
     onOpenArtist(artistid) {

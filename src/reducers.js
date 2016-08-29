@@ -13,7 +13,8 @@ const defaultHostState = {
     playlistItemsAudio: [],
     playlistItemsVideo: [],
     volume: 0,
-    muted: false
+    muted: false,
+    name: ''
 };
 function hostState(state = defaultHostState, action) {
     switch (action.type) {
@@ -24,9 +25,9 @@ function hostState(state = defaultHostState, action) {
             let hostState = Object.assign({}, state);
             if (action.data) {
                 if (action.data.appProperties) {
-                    hostState.volume = action.data.appProperties.volume;
-                    hostState.muted = action.data.appProperties.muted;
-                    hostState.name = action.data.appProperties.name;
+                    hostState.volume = action.data.appProperties.volume || hostState.volume;
+                    hostState.muted = action.data.appProperties.muted || hostState.muted;
+                    hostState.name = action.data.appProperties.name || hostState.name;
                 } else {
                     const [playerProps, playerItem] = action.data;
                     hostState.playerInfo = Object.assign({}, playerProps, playerItem.item, { lastUpdated: new Date().getTime() });
